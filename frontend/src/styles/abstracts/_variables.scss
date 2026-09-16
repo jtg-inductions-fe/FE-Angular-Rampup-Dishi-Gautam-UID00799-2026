@@ -1,0 +1,43 @@
+// Breakpoints
+$breakpoints: (
+    mobile-min: 320px,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+);
+
+// Brand
+$color-primary: #000000;
+$color-primary-hover: #242424;
+$color-primary-light: #f2f2f2;
+
+// Text
+$color-text-primary: #242424;
+$color-text-secondary: #6b6b6b;
+$color-text-muted: #9b9b9b;
+$color-text-inverse: #ffffff;
+
+// Background
+$color-background: #ffffff;
+$color-surface: #f9f9f9;
+$color-surface-hover: #f2f2f2;
+
+// Border
+$color-border: #e6e6e6;
+
+// Feedback
+$color-success: #1a8917;
+$color-warning: #f0a202;
+$color-error: #d32f2f;
+$color-info: #1976d2;
+
+// Spacing
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.5rem;
+$space-6: 2rem;
+$space-7: 3rem;
+$space-8: 4rem;
