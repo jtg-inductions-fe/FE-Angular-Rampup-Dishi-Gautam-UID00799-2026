@@ -1,9 +1,0 @@
-@use 'abstracts' as ds;
-
-mat-dialog-content {
-    color: ds.$color-text-secondary;
-}
-
-mat-dialog-actions {
-    gap: ds.px-to-rem(8);
-}
