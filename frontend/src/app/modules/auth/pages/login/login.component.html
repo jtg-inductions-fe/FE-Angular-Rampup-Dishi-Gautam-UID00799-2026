@@ -1,0 +1,84 @@
+<section class="login-page">
+    <mat-card class="login-page__card" appearance="outlined">
+        <mat-card-content>
+            <div class="login-page__header">
+                <h1 class="login-page__title">Welcome back</h1>
+                <p class="login-page__subtitle">Sign in to continue to Folio</p>
+            </div>
+
+            <form
+                class="login-page__form"
+                [formGroup]="loginForm"
+                (ngSubmit)="onSubmit()"
+            >
+                <mat-form-field
+                    appearance="outline"
+                    class="login-page__field"
+                >
+                    <mat-label>Username</mat-label>
+
+                    <input
+                        matInput
+                        placeholder="dishi"
+                        formControlName="username"
+                    />
+
+                    @if (
+                        loginForm.controls.username.hasError('required') &&
+                        loginForm.controls.username.touched
+                    ) {
+                        <mat-error>Username is required</mat-error>
+                    }
+
+                    @if (
+                        loginForm.controls.username.hasError('username') &&
+                        loginForm.controls.username.touched
+                    ) {
+                        <mat-error>Enter a valid username</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="outline"
+                    class="login-page__field"
+                >
+                    <mat-label>Password</mat-label>
+
+                    <input
+                        matInput
+                        type="password"
+                        placeholder="Enter your password"
+                        formControlName="password"
+                    />
+
+                    @if (
+                        loginForm.controls.password.hasError('required') &&
+                        loginForm.controls.password.touched
+                    ) {
+                        <mat-error>Password is required</mat-error>
+                    }
+                </mat-form-field>
+
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="submit"
+                    class="login-page__button"
+                    [disabled]="isSubmitting"
+                >
+                    {{ isSubmitting ? 'Logging in...' : 'Login' }}
+                </button>
+            </form>
+
+            <p class="login-page__register">
+                Don't have an account?
+                <a
+                    class="login-page__link"
+                    [routerLink]="routePaths.signup"
+                >
+                    Create an account
+                </a>
+            </p>
+        </mat-card-content>
+    </mat-card>
+</section>
