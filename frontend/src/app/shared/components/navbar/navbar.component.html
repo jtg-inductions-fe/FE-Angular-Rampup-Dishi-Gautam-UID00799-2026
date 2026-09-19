@@ -37,13 +37,15 @@
 </mat-toolbar>
 
 <mat-menu #mobileMenu="matMenu">
-    <a mat-menu-item [routerLink]="routePaths.home"> Articles </a>
+    <a mat-menu-item [routerLink]="routePaths.home">
+        Articles
+    </a>
 
     @if (isAuthenticated()) {
         <button mat-menu-item type="button" (click)="logout()">Logout</button>
     } @else {
         <a mat-menu-item [routerLink]="routePaths.login"> Login </a>
 
-        <a mat-menu-item [routerLink]="routePaths.register"> Register </a>
+        <a mat-menu-item [routerLink]="routePaths.signup"> Signup </a>
     }
 </mat-menu>
