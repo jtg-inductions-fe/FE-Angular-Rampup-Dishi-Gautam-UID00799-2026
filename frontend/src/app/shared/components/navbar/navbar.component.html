@@ -32,20 +32,30 @@
             Articles
         </a>
 
-        <a
-            mat-button
-            routerLink="/login"
-        >
-            Login
-        </a>
+        @if (isAuthenticated()) {
+            <button
+                mat-button
+                type="button"
+                (click)="logout()"
+            >
+                Logout
+            </button>
+        } @else {
+            <a
+                mat-button
+                routerLink="/login"
+            >
+                Login
+            </a>
 
-        <a
-            mat-flat-button
-            color="primary"
-            routerLink="/register"
-        >
-            Register
-        </a>
+            <a
+                mat-flat-button
+                color="primary"
+                routerLink="/register"
+            >
+                Register
+            </a>
+        }
     </nav>
 
     <button
@@ -66,17 +76,27 @@
         Articles
     </a>
 
-    <a
-        mat-menu-item
-        routerLink="/login"
-    >
-        Login
-    </a>
+    @if (isAuthenticated()) {
+        <button
+            mat-menu-item
+            type="button"
+            (click)="logout()"
+        >
+            Logout
+        </button>
+    } @else {
+        <a
+            mat-menu-item
+            routerLink="/login"
+        >
+            Login
+        </a>
 
-    <a
-        mat-menu-item
-        routerLink="/register"
-    >
-        Register
-    </a>
+        <a
+            mat-menu-item
+            routerLink="/signup"
+        >
+            Register
+        </a>
+    }
 </mat-menu>
