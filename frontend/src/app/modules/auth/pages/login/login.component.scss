@@ -1,0 +1,73 @@
+@use 'abstracts' as ds;
+
+.login-page {
+    min-height: calc(100dvh - ds.px-to-rem(56));
+    padding: ds.px-to-rem(24);
+
+    display: grid;
+    place-items: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: ds.px-to-rem(420);
+}
+
+.login-header {
+    margin-bottom: ds.px-to-rem(28);
+    text-align: center;
+
+    h1 {
+        margin-bottom: ds.px-to-rem(8);
+        color: ds.$color-text-primary;
+        font-size: ds.px-to-rem(28);
+        font-weight: 700;
+    }
+
+    p {
+        color: ds.$color-text-secondary;
+        font-size: ds.px-to-rem(15);
+    }
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: ds.px-to-rem(8);
+}
+
+.full-width {
+    width: 100%;
+}
+
+.login-button {
+    width: 100%;
+    margin-top: ds.px-to-rem(8);
+}
+
+.register-text {
+    margin-top: ds.px-to-rem(24);
+
+    text-align: center;
+    color: ds.$color-text-secondary;
+    font-size: ds.px-to-rem(14);
+
+    a {
+        color: ds.$color-text-primary;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+}
+
+@include ds.respond-to(md) {
+    .login-page {
+        min-height: calc(100dvh - ds.px-to-rem(64));
+        padding: ds.px-to-rem(32);
+    }
+
+    .login-header {
+        h1 {
+            font-size: ds.px-to-rem(32);
+        }
+    }
+}
