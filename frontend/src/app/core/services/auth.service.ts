@@ -3,13 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
-import {
-    ApiResponse,
-    LoginData,
-    LoginRequest,
-    RegisterRequest,
-    User,
-} from '../models/user.model';
+import { ApiResponse, LoginData, LoginRequest, RegisterRequest, User } from '../models/user.model';
 
 @Injectable({
     providedIn: 'root',
@@ -19,8 +13,7 @@ export class AuthService {
 
     private readonly tokenKey = 'folio_token';
 
-    private readonly currentUserSubject =
-        new BehaviorSubject<User | null>(null);
+    private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
 
     readonly currentUser$ = this.currentUserSubject.asObservable();
 
@@ -44,7 +37,7 @@ export class AuthService {
             tap((response) => {
                 const { token, user } = response.data;
 
-                    localStorage.setItem(this.tokenKey, token);
+                localStorage.setItem(this.tokenKey, token);
 
                 this.setUser(user);
             }),
@@ -52,9 +45,7 @@ export class AuthService {
     }
 
     getProfile(): Observable<ApiResponse<User>> {
-        return this.http.get<ApiResponse<User>>(
-            `${this.apiUrl}/users/profile`,
-        );
+        return this.http.get<ApiResponse<User>>(`${this.apiUrl}/users/profile`);
     }
 
     getToken(): string | null {
