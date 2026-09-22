@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [DatePipe,ArticleCardComponent,MatButtonModule],
+    imports: [DatePipe, ArticleCardComponent, MatButtonModule],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
 })
@@ -27,10 +27,7 @@ export class DashboardComponent {
                 this.articles.set(response.data);
             },
             error: (error) => {
-                console.error(
-                    'Failed to load articles:',
-                    error,
-                );
+                console.error('Failed to load articles:', error);
             },
         });
     }

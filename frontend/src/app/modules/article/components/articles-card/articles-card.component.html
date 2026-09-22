@@ -1,52 +1,41 @@
 <article class="article-card">
-    <div class="article-info">
-        <div class="article-meta">
-            <span class="article-author">
+    <div class="article-card__info">
+        <div class="article-card__meta">
+            <span class="article-card__author">
                 {{ article().author }}
             </span>
 
-            <span class="article-meta-separator">
-                ·
-            </span>
+            <span class="article-card__meta-separator">·</span>
 
-            <span class="article-date">
+            <span class="article-card__date">
                 {{ article().createdAt | date: 'dd-MM-yyyy' }}
             </span>
         </div>
 
-        <h2 class="article-title">
+        <h2 class="article-card__title">
             {{ article().title }}
         </h2>
 
-        <p class="article-description">
+        <p class="article-card__description">
             {{ article().shortDescription }}
         </p>
 
-        <div class="article-footer">
-            <div class="article-tags">
+        <div class="article-card__footer">
+            <div class="article-card__tags">
                 @for (tag of article().tags; track tag) {
-                    <span class="article-tag">
+                    <span class="article-card__tag">
                         {{ tag }}
                     </span>
                 }
             </div>
 
-            <button
-                class="article-read-button"
-                mat-button
-                color="primary"
-                type="button"
-            >
+            <button mat-button color="primary" type="button" class="article-card__read-button">
                 Read Article
             </button>
         </div>
     </div>
 
-    <div class="article-image-wrapper">
-        <img
-            class="article-image"
-            [src]="article().image"
-            [alt]="article().title"
-        />
+    <div class="article-card__image-wrapper">
+        <img class="article-card__image" [src]="article().image" [alt]="article().title" />
     </div>
 </article>

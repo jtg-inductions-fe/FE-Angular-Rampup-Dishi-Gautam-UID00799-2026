@@ -18,25 +18,11 @@
         <a mat-button [routerLink]="routePaths.home"> Articles </a>
 
         @if (isAuthenticated()) {
-            <button
-                mat-button
-                type="button"
-                (click)="logout()"
-            >
-                Logout
-            </button>
+            <button mat-button type="button" (click)="logout()">Logout</button>
         } @else {
-            <a mat-button [routerLink]="routePaths.login">
-                Login
-            </a>
+            <a mat-button [routerLink]="routePaths.login"> Login </a>
 
-            <a
-                mat-flat-button
-                color="primary"
-                [routerLink]="routePaths.signup"
-            >
-                Signup
-            </a>
+            <a mat-flat-button color="primary" [routerLink]="routePaths.signup"> Signup </a>
         }
     </nav>
 
@@ -51,25 +37,13 @@
 </mat-toolbar>
 
 <mat-menu #mobileMenu="matMenu">
-    <a mat-menu-item [routerLink]="routePaths.home">
-        Articles
-    </a>
+    <a mat-menu-item [routerLink]="routePaths.home"> Articles </a>
 
     @if (isAuthenticated()) {
-        <button
-            mat-menu-item
-            type="button"
-            (click)="logout()"
-        >
-            Logout
-        </button>
+        <button mat-menu-item type="button" (click)="logout()">Logout</button>
     } @else {
-        <a mat-menu-item [routerLink]="routePaths.login">
-            Login
-        </a>
+        <a mat-menu-item [routerLink]="routePaths.login"> Login </a>
 
-        <a mat-menu-item [routerLink]="routePaths.register">
-            Register
-        </a>
+        <a mat-menu-item [routerLink]="routePaths.register"> Register </a>
     }
 </mat-menu>
