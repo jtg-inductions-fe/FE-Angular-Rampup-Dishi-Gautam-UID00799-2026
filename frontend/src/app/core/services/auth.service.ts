@@ -27,8 +27,7 @@ export class AuthService {
 
     private readonly tokenKey = 'folio_token';
 
-    private readonly currentUserSubject =
-        new BehaviorSubject<User | null>(null);
+    private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
 
     readonly currentUser$ =
         this.currentUserSubject.asObservable();
@@ -48,13 +47,8 @@ export class AuthService {
         this.restoreSession();
     }
 
-    register(
-        registerData: RegisterRequest,
-    ): Observable<ApiResponse<User>> {
-        return this.http.post<ApiResponse<User>>(
-            `${this.apiUrl}/users/register`,
-            registerData,
-        );
+    register(registerData: RegisterRequest): Observable<ApiResponse<User>> {
+        return this.http.post<ApiResponse<User>>(`${this.apiUrl}/users/register`, registerData);
     }
 
     login(
@@ -80,9 +74,7 @@ export class AuthService {
     }
 
     getProfile(): Observable<ApiResponse<User>> {
-        return this.http.get<ApiResponse<User>>(
-            `${this.apiUrl}/users/profile`,
-        );
+        return this.http.get<ApiResponse<User>>(`${this.apiUrl}/users/profile`);
     }
 
     getToken(): string | null {
@@ -135,7 +127,7 @@ export class AuthService {
         localStorage.removeItem(this.tokenKey);
         this.currentUserSubject.next(null);
         this.isAuthenticated.set(false);
-        this.router.navigate(['/login'])
+        this.router.navigate(['/login']);
     }
 >>>>>>> d730098 ([DG_A2_02]: Update code as per BEM model)
 }
