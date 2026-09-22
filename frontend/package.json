@@ -1,5 +1,5 @@
 {
-    "name": "project",
+    "name": "Folio",
     "version": "0.0.0",
     "type": "module",
     "scripts": {
@@ -25,6 +25,7 @@
         "@angular/platform-browser": "^17.3.0",
         "@angular/platform-browser-dynamic": "^17.3.0",
         "@angular/router": "^17.3.0",
+        "material-icons": "^1.13.14",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.14.3"
@@ -40,6 +41,7 @@
         "@types/jasmine": "~5.1.0",
         "@typescript-eslint/eslint-plugin": "^7.11.0",
         "@typescript-eslint/parser": "^7.11.0",
+        "eslint-plugin-simple-import-sort": "^14.0.0",
         "husky": "^9.1.7",
         "jasmine-core": "~5.1.0",
         "karma": "~6.4.0",

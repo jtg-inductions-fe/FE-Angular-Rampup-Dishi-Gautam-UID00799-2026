@@ -1,28 +1,22 @@
 <section class="not-found-page">
-    <mat-card
-        class="not-found-card"
-        appearance="outlined"
-    >
+    <mat-card class="not-found-page__card" appearance="outlined">
         <mat-card-content>
-            <p class="error-label">
-                PAGE NOT FOUND
-            </p>
+            <p class="not-found-page__label">PAGE NOT FOUND</p>
 
-            <h1 class="error-code">
-                404
-            </h1>
+            <h1 class="not-found-page__code">404</h1>
 
-            <p class="error-message">
+            <p class="not-found-page__message">
                 The page you're looking for doesn't exist.
             </p>
 
-            <a
+            <button
                 mat-stroked-button
                 color="primary"
-                routerLink="/"
+                type="button"
+                [routerLink]="routePaths.home"
             >
                 Go Home
-            </a>
+            </button>
         </mat-card-content>
     </mat-card>
 </section>

@@ -10,6 +10,7 @@
                 "plugin:@angular-eslint/recommended",
                 "plugin:@angular-eslint/template/process-inline-templates"
             ],
+            "plugins": ["simple-import-sort"],
             "rules": {
                 "@angular-eslint/directive-selector": [
                     "error",
@@ -26,7 +27,17 @@
                         "prefix": "app",
                         "style": "kebab-case"
                     }
-                ]
+                ],
+                "no-console": "error",
+                "@typescript-eslint/no-unused-vars": [
+                    "error",
+                    {
+                        "argsIgnorePattern": "^_",
+                        "varsIgnorePattern": "^_"
+                    }
+                ],
+                "simple-import-sort/imports": "error",
+                "simple-import-sort/exports": "error"
             }
         },
         {

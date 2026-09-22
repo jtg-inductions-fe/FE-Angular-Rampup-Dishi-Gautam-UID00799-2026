@@ -1,0 +1,55 @@
+@use 'sass:map';
+@use '../abstracts/functions' as function;
+@use '../abstracts/variables' as variables;
+@use '../abstracts/mixins' as mixins;
+
+@include mixins.font-face(
+    map.get(variables.$font-configs, inter),
+    variables.$font-weight-range
+);
+
+body {
+    @include mixins.text-style(
+        variables.$font-family-primary,
+        function.px-to-rem(16px),
+        regular
+    );
+
+    color: variables.$color-text-primary;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: variables.$font-family-primary;
+    color: variables.$color-text-primary;
+}
+
+a {
+    @include mixins.text-style(
+        variables.$font-family-primary,
+        function.px-to-rem(16px),
+        medium
+    );
+
+    text-decoration: none;
+}
+
+p {
+    @include mixins.text-style(
+        variables.$font-family-primary,
+        inherit,
+        regular
+    );
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/assets/fonts/inter-font.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}

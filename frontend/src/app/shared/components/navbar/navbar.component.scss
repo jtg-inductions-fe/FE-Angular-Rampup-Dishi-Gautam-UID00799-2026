@@ -1,90 +1,80 @@
 @use 'abstracts' as ds;
 
 .navbar {
+    @include ds.flex-center;
     min-height: ds.px-to-rem(56);
     height: auto;
     padding: ds.px-to-rem(8) ds.px-to-rem(12);
-
-    @include ds.flex-center;
-
     gap: ds.px-to-rem(8);
-
     border-bottom: 1px solid ds.$color-border;
     background-color: ds.$color-background;
-}
 
-.brand {
-    flex-shrink: 0;
+    &__brand {
+        flex-shrink: 0;
+        color: ds.$color-text-primary;
+        font-size: ds.px-to-rem(24);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
 
-    color: ds.$color-text-primary;
-    font-size: ds.px-to-rem(24);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
-}
+    &__search {
+        flex: 1;
+        min-width: 0;
+    }
 
-.search-container {
-    flex: 1;
-    min-width: 0;
-}
+    &__search-bar {
+        width: 100%;
+        margin: 0;
+    }
 
-.search-bar {
-    width: 100%;
-    margin: 0;
-}
+    &__navigation {
+        display: none;
+    }
 
-.desktop-navigation {
-    display: none;
-}
+    &__mobile-menu {
+        flex-shrink: 0;
+    }
 
-.mobile-menu-button {
-    flex-shrink: 0;
-}
-
-@include ds.respond-to(md) {
-    .navbar {
+    @include ds.respond-to(md) {
         min-height: ds.px-to-rem(64);
         height: ds.px-to-rem(64);
         padding: 0 ds.px-to-rem(24);
-
         gap: ds.px-to-rem(16);
+
+        &__brand {
+            font-size: ds.px-to-rem(26);
+        }
+
+        &__search {
+            flex: 1;
+            max-width: ds.px-to-rem(360);
+            margin: 0 auto;
+        }
+
+        &__navigation {
+            @include ds.flex-center;
+            gap: ds.px-to-rem(8);
+        }
+
+        &__mobile-menu {
+            display: none;
+        }
     }
 
-    .brand {
-        font-size: ds.px-to-rem(26);
-    }
-
-    .search-container {
-        flex: 1;
-        max-width: ds.px-to-rem(360);
-        margin: 0 auto;
-    }
-
-    .desktop-navigation {
-        @include ds.flex-center;
-
-        gap: ds.px-to-rem(8);
-    }
-
-    .mobile-menu-button {
-        display: none;
-    }
-}
-
-@include ds.respond-to(lg) {
-    .navbar {
+    @include ds.respond-to(lg) {
         padding: 0 ds.px-to-rem(48);
-    }
 
-    .brand {
-        font-size: ds.px-to-rem(28);
-    }
+        &__brand {
+            font-size: ds.px-to-rem(28);
+        }
 
-    .search-container {
-        max-width: ds.px-to-rem(420);
-    }
+        &__search {
+            max-width: ds.px-to-rem(420);
+        }
 
-    .desktop-navigation {
-        gap: ds.px-to-rem(12);
+        &__navigation {
+            gap: ds.px-to-rem(12);
+        }
     }
 }

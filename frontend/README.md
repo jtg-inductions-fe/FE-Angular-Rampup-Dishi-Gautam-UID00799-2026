@@ -1,27 +1,53 @@
-# Project
+# Folio
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Folio is a Medium-style article platform built with Angular 17. Users can create an account, log in, browse articles, and read article details.
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- User registration and login
+- JWT-based authentication
+- Protected routes with authentication guards
+- Guest-only authentication pages
+- Article listing
+- Article detail page
+- Article search
+- Create and update articles
+- Delete own articles
+- Article tags
+- Pagination
+- Rich text article content
+- Base64 image upload
+- Material UI components
+- Responsive navigation
+- Mobile navigation menu
+- Loading indicator
+- Snackbar notifications
+- Confirmation dialog
+- 404 page
+- Lazy-loaded article routes
+- HTTP interceptors for authentication and loading state
+- Form validation
+- ESLint and Prettier configuration
+- Git hooks with Husky
 
-## Code scaffolding
+## Tech Stack
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Angular 17
+- Angular Material
+- TypeScript
+- SCSS
+- RxJS
+- Node.js / Express
+- SQLite
+- JWT
 
-## Build
+## Getting Started
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Prerequisites
 
-## Running unit tests
+Make sure Node.js and npm are installed.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Install dependencies
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```bash
+npm install
