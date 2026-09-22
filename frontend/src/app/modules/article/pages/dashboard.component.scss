@@ -1,0 +1,78 @@
+@use 'abstracts' as ds;
+
+.dashboard {
+    width: min(100% - ds.px-to-rem(32), ds.px-to-rem(900));
+    margin: 0 auto;
+    padding: ds.px-to-rem(40) 0;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: ds.px-to-rem(24);
+    margin-bottom: ds.px-to-rem(24);
+}
+
+.dashboard-heading {
+    min-width: 0;
+}
+
+.dashboard-title {
+    margin: 0 0 ds.px-to-rem(8);
+    color: ds.$color-text-primary;
+    font-size: ds.px-to-rem(32);
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.dashboard-description {
+    margin: 0;
+    color: ds.$color-text-secondary;
+    font-size: ds.px-to-rem(16);
+    line-height: 1.5;
+}
+
+.article-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: ds.px-to-rem(240);
+    padding: ds.px-to-rem(60) 0;
+    text-align: center;
+}
+
+.empty-state-title {
+    margin: 0 0 ds.px-to-rem(8);
+    color: ds.$color-text-primary;
+    font-size: ds.px-to-rem(20);
+    font-weight: 600;
+}
+
+.empty-state-description {
+    margin: 0;
+    color: ds.$color-text-secondary;
+    font-size: ds.px-to-rem(14);
+}
+
+@include ds.respond-to(sm) {
+    .dashboard {
+        width: min(calc(100% - ds.px-to-rem(48)), ds.px-to-rem(900));
+    }
+}
+
+@include ds.respond-to(md) {
+    .dashboard {
+        padding: ds.px-to-rem(48) 0;
+    }
+
+    .dashboard-title {
+        font-size: ds.px-to-rem(36);
+    }
+}
