@@ -63,9 +63,7 @@ export class SignupComponent {
     );
 
     protected readonly routePaths = ROUTE_PATHS;
-
     isSubmitting = false;
-
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -80,11 +78,8 @@ export class SignupComponent {
             this.signupForm.markAllAsTouched();
             return;
         }
-
         const { username, email, password } = this.signupForm.getRawValue();
-
         this.isSubmitting = true;
-
         this.authService
             .register({
                 username,
