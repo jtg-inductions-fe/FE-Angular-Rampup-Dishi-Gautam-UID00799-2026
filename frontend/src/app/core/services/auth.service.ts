@@ -10,13 +10,7 @@ import {
     tap,
 } from 'rxjs';
 
-import {
-    ApiResponse,
-    LoginData,
-    LoginRequest,
-    RegisterRequest,
-    User,
-} from '../models/user.model';
+import { ApiResponse, LoginData, LoginRequest, RegisterRequest, User } from '../models/user.model';
 
 @Injectable({
     providedIn: 'root',
@@ -32,9 +26,12 @@ export class AuthService {
     readonly currentUser$ =
         this.currentUserSubject.asObservable();
 
+<<<<<<< HEAD
     readonly currentUser =
         signal<User | null>(null);
 
+=======
+>>>>>>> d730098 ([DG_A2_02]: Update code as per BEM model)
     readonly isAuthenticated = signal<boolean>(!!localStorage.getItem(this.tokenKey));
 
     constructor(
@@ -78,6 +75,7 @@ export class AuthService {
         return localStorage.getItem(this.tokenKey);
     }
 
+<<<<<<< HEAD
     getUser(): User | null {
         return this.currentUserSubject.value;
     }
@@ -118,4 +116,12 @@ export class AuthService {
         this.currentUser.set(user);
         this.isAuthenticated.set(true);
     }
+=======
+    logout(): void {
+        localStorage.removeItem(this.tokenKey);
+        this.currentUserSubject.next(null);
+        this.isAuthenticated.set(false);
+        this.router.navigate(['/login']);
+    }
+>>>>>>> d730098 ([DG_A2_02]: Update code as per BEM model)
 }
