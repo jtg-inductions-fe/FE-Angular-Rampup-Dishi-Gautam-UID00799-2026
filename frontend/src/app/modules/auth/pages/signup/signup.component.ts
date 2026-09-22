@@ -30,7 +30,7 @@ import { AuthService } from '@app/core/services/auth.service';
     styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
-    protected readonly routePaths=ROUTE_PATHS;
+    protected readonly routePaths = ROUTE_PATHS;
     readonly signupForm = new FormGroup(
         {
             username: new FormControl('', {
@@ -40,10 +40,7 @@ export class SignupComponent {
 
             email: new FormControl('', {
                 nonNullable: true,
-                validators: [
-                    Validators.required,
-                    Validators.email,
-                ],
+                validators: [Validators.required, Validators.email],
             }),
 
             password: new FormControl('', {
@@ -51,9 +48,7 @@ export class SignupComponent {
                 validators: [
                     Validators.required,
                     Validators.minLength(8),
-                    Validators.pattern(
-                        /^(?=(?:.*\d){2,})(?=(?:.*[^A-Za-z0-9]){2,}).+$/,
-                    ),
+                    Validators.pattern(/^(?=(?:.*\d){2,})(?=(?:.*[^A-Za-z0-9]){2,}).+$/),
                 ],
             }),
 
@@ -65,16 +60,13 @@ export class SignupComponent {
         {
             validators: (control: AbstractControl): ValidationErrors | null => {
                 const password = control.get('password')?.value;
-                const confirmPassword =
-                    control.get('confirmPassword')?.value;
+                const confirmPassword = control.get('confirmPassword')?.value;
 
                 if (!password || !confirmPassword) {
                     return null;
                 }
 
-                return password === confirmPassword
-                    ? null
-                    : { passwordMismatch: true };
+                return password === confirmPassword ? null : { passwordMismatch: true };
             },
         },
     );
@@ -92,11 +84,7 @@ export class SignupComponent {
             return;
         }
 
-        const {
-            username,
-            email,
-            password,
-        } = this.signupForm.getRawValue();
+        const { username, email, password } = this.signupForm.getRawValue();
 
         this.isSubmitting = true;
 

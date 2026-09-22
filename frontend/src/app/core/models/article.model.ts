@@ -18,9 +18,9 @@ export interface ArticleListData {
     pageSize: number;
 }
 
-export interface ArticleListResponse{
-    success:boolean,
-    message:string,
-    data:ArticleListData,
-    timeStamp:string
+export interface ArticleListResponse {
+    success: boolean;
+    message: string;
+    data: ArticleListData;
+    timeStamp: string;
 }

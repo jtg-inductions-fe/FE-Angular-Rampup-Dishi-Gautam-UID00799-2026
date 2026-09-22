@@ -3,24 +3,13 @@
         <mat-card-content>
             <div class="signup-page__header">
                 <h1 class="signup-page__title">Create your account</h1>
-                <p class="signup-page__subtitle">
-                    Join Folio and start sharing your stories
-                </p>
+                <p class="signup-page__subtitle">Join Folio and start sharing your stories</p>
             </div>
 
-            <form
-                class="signup-page__form"
-                [formGroup]="signupForm"
-                (ngSubmit)="onSubmit()"
-            >
+            <form class="signup-page__form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
                 <mat-form-field appearance="outline" class="signup-page__field">
                     <mat-label>Username</mat-label>
-                    <input
-                        matInput
-                        type="text"
-                        placeholder="dishi"
-                        formControlName="username"
-                    />
+                    <input matInput type="text" placeholder="dishi" formControlName="username" />
 
                     @if (
                         signupForm.controls.username.hasError('required') &&
@@ -74,18 +63,14 @@
                         signupForm.controls.password.hasError('minlength') &&
                         signupForm.controls.password.touched
                     ) {
-                        <mat-error>
-                            Password must be at least 8 characters
-                        </mat-error>
+                        <mat-error> Password must be at least 8 characters </mat-error>
                     }
 
                     @if (
                         signupForm.controls.password.hasError('pattern') &&
                         signupForm.controls.password.touched
                     ) {
-                        <mat-error>
-                            Use at least 2 numbers and 2 special characters
-                        </mat-error>
+                        <mat-error> Use at least 2 numbers and 2 special characters </mat-error>
                     }
                 </mat-form-field>
 
@@ -99,9 +84,8 @@
                     />
 
                     @if (
-                        signupForm.controls.confirmPassword.hasError(
-                            'required'
-                        ) && signupForm.controls.confirmPassword.touched
+                        signupForm.controls.confirmPassword.hasError('required') &&
+                        signupForm.controls.confirmPassword.touched
                     ) {
                         <mat-error>Please confirm your password</mat-error>
                     }
@@ -127,9 +111,7 @@
 
             <p class="signup-page__login">
                 Already have an account?
-                <a class="signup-page__link" [routerLink]="routePaths.login">
-                    Login
-                </a>
+                <a class="signup-page__link" [routerLink]="routePaths.login"> Login </a>
             </p>
         </mat-card-content>
     </mat-card>

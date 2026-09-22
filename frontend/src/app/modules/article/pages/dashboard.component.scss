@@ -63,10 +63,7 @@
 
 @include ds.respond-to(sm) {
     .dashboard {
-        width: min(
-            calc(100% - ds.px-to-rem(48)),
-            ds.px-to-rem(900)
-        );
+        width: min(calc(100% - ds.px-to-rem(48)), ds.px-to-rem(900));
     }
 }
 

@@ -6,22 +6,11 @@
                 <p class="login-page__subtitle">Sign in to continue to Folio</p>
             </div>
 
-            <form
-                class="login-page__form"
-                [formGroup]="loginForm"
-                (ngSubmit)="onSubmit()"
-            >
-                <mat-form-field
-                    appearance="outline"
-                    class="login-page__field"
-                >
+            <form class="login-page__form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="outline" class="login-page__field">
                     <mat-label>Username</mat-label>
 
-                    <input
-                        matInput
-                        placeholder="dishi"
-                        formControlName="username"
-                    />
+                    <input matInput placeholder="dishi" formControlName="username" />
 
                     @if (
                         loginForm.controls.username.hasError('required') &&
@@ -38,10 +27,7 @@
                     }
                 </mat-form-field>
 
-                <mat-form-field
-                    appearance="outline"
-                    class="login-page__field"
-                >
+                <mat-form-field appearance="outline" class="login-page__field">
                     <mat-label>Password</mat-label>
 
                     <input
@@ -72,12 +58,7 @@
 
             <p class="login-page__register">
                 Don't have an account?
-                <a
-                    class="login-page__link"
-                    [routerLink]="routePaths.signup"
-                >
-                    Create an account
-                </a>
+                <a class="login-page__link" [routerLink]="routePaths.signup"> Create an account </a>
             </p>
         </mat-card-content>
     </mat-card>

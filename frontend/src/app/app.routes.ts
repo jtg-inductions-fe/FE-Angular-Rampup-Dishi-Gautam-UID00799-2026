@@ -5,12 +5,24 @@ import { HomePageComponent } from './modules/home-page/home-page.component';
 import {NotFoundComponent} from './shared/components/not-found/not-found.component'
 
 export const routes: Routes = [
+    ...authRoutes,
     {
         path: '',
-        component: HomePageComponent,
-        canActivate:[authGuard]
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                component: HomePageComponent,
+            },
+            {
+                path: '',
+                loadChildren: () =>
+                    import('./modules/article/articles.routes').then(
+                        (module) => module.articlesRoutes,
+                    ),
+            },
+        ],
     },
-    ...authRoutes,
     {
         path: '**',
         component: NotFoundComponent,

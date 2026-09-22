@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
     selector: 'app-article-card',
     standalone: true,
-    imports: [DatePipe,MatButtonModule],
+    imports: [DatePipe, MatButtonModule],
     templateUrl: './articles-card.component.html',
     styleUrl: './articles-card.component.scss',
 })
