@@ -15,11 +15,9 @@ import { ArticleService } from '@app/core/services/article.service';
 })
 export class ArticleDetailComponent implements OnInit {
     protected readonly article = signal<Article | null>(null);
-
     private readonly location = inject(Location);
     private readonly route = inject(ActivatedRoute);
     private readonly articleService = inject(ArticleService);
-
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
 
