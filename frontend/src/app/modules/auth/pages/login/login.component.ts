@@ -58,8 +58,22 @@ export class LoginComponent {
                 this.isSubmitting = false;
                 this.router.navigate(['/dashboard']);
             },
-            error: () => {
+
+            error: (error) => {
                 this.isSubmitting = false;
+
+                if (error.status === 401) {
+                    this.snackbarService.open(
+                        error.error?.message ?? 'Invalid username or password.',
+                        'Close',
+                    );
+                    return;
+                }
+
+                this.snackbarService.open(
+                    error.error?.message ?? 'Login failed. Please try again.',
+                    'Close',
+                );
             },
         });
     }
