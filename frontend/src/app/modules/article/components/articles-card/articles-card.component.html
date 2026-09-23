@@ -6,6 +6,7 @@
             </span>
 
             <span class="article-card__meta-separator">·</span>
+            <span class="article-meta-separator"> · </span>
 
             <span class="article-card__date">
                 {{ article().createdAt | date: 'dd-MM-yyyy' }}
@@ -29,7 +30,13 @@
                 }
             </div>
 
-            <button mat-button color="primary" type="button" class="article-card__read-button">
+            <button
+                class="article-read-button"
+                mat-button
+                color="primary"
+                type="button"
+                (click)="onReadArticle()"
+            >
                 Read Article
             </button>
         </div>

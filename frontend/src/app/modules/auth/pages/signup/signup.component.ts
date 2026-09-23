@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 import { AuthService } from '@app/core/services/auth.service';
+import { SnackbarService } from '@app/shared/services/snackbar.service';
 
 @Component({
     selector: 'app-signup',
@@ -58,9 +59,14 @@ export class SignupComponent {
             }),
         },
         {
-            validators: (control: AbstractControl): ValidationErrors | null => {
-                const password = control.get('password')?.value;
-                const confirmPassword = control.get('confirmPassword')?.value;
+            validators: (
+                control: AbstractControl,
+            ): ValidationErrors | null => {
+                const password =
+                    control.get('password')?.value;
+
+                const confirmPassword =
+                    control.get('confirmPassword')?.value;
 
                 if (!password || !confirmPassword) {
                     return null;
@@ -76,6 +82,7 @@ export class SignupComponent {
     constructor(
         private readonly authService: AuthService,
         private readonly router: Router,
+        private readonly snackbarService: SnackbarService,
     ) {}
 
     onSubmit(): void {
@@ -89,7 +96,7 @@ export class SignupComponent {
         this.isSubmitting = true;
 
         this.authService
-            .register({
+            .signup({
                 username,
                 email,
                 password,
@@ -97,10 +104,33 @@ export class SignupComponent {
             .subscribe({
                 next: () => {
                     this.isSubmitting = false;
+
+                    this.snackbarService.open(
+                        'Registration successful. Please login.',
+                        'Close',
+                    );
+
                     this.router.navigate(['/login']);
                 },
-                error: () => {
+
+                error: (error) => {
                     this.isSubmitting = false;
+
+                    if (error.status === 409) {
+                        this.snackbarService.open(
+                            error.error?.message ??
+                                'Username or email already exists.',
+                            'Close',
+                        );
+
+                        return;
+                    }
+
+                    this.snackbarService.open(
+                        error.error?.message ??
+                            'Registration failed. Please try again.',
+                        'Close',
+                    );
                 },
             });
     }

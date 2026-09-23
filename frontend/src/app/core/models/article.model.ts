@@ -1,5 +1,5 @@
 export interface Article {
-    id: number;
+    id: string;
     title: string;
     shortDescription: string;
     description: string;
@@ -18,9 +18,16 @@ export interface ArticleListData {
     pageSize: number;
 }
 
-export interface ArticleListResponse {
+export interface ArticleListResponse{
+    success:boolean,
+    message:string,
+    data:ArticleListData,
+    timeStamp:string
+}
+
+export interface ArticleResponse {
     success: boolean;
     message: string;
-    data: ArticleListData;
+    data: Article;
     timeStamp: string;
 }

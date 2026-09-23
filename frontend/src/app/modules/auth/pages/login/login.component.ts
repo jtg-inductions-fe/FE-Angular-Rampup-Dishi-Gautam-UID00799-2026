@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 import { AuthService } from '@app/core/services/auth.service';
+import { SnackbarService } from '@app/shared/services/snackbar.service';
 
 @Component({
     selector: 'app-login',
@@ -40,6 +41,7 @@ export class LoginComponent {
 
     constructor(
         private readonly authService: AuthService,
+        private readonly snackbarService: SnackbarService,
         private readonly router: Router,
     ) {}
 
@@ -56,8 +58,22 @@ export class LoginComponent {
                 this.isSubmitting = false;
                 this.router.navigate(['/dashboard']);
             },
-            error: () => {
+
+            error: (error) => {
                 this.isSubmitting = false;
+
+                if (error.status === 401) {
+                    this.snackbarService.open(
+                        error.error?.message ?? 'Invalid username or password.',
+                        'Close',
+                    );
+                    return;
+                }
+
+                this.snackbarService.open(
+                    error.error?.message ?? 'Login failed. Please try again.',
+                    'Close',
+                );
             },
         });
     }

@@ -1,8 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-
-import { ArticleListData, ArticleListResponse } from '../models/article.model';
+import {
+    Article,
+    ArticleListData,
+    ArticleListResponse,
+    ArticleResponse,
+} from '../models/article.model';
 
 @Injectable({
     providedIn: 'root',
@@ -18,5 +22,13 @@ export class ArticleService {
         return this.http
             .get<ArticleListResponse>(this.apiUrl, { params })
             .pipe(map((response) => response.data));
+    }
+    getArticle(id:string):Observable<Article>{
+        return this.http.get<ArticleResponse>(
+            `${this.apiUrl}/${id}`,
+        )
+        .pipe(
+            map((response)=>response.data)
+        )
     }
 }

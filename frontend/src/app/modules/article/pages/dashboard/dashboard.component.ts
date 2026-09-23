@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { ArticleCardComponent } from '../components/articles-card/articles-card.component';
+import { ArticleCardComponent } from '../../components/articles-card/articles-card.component';
 import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
 import { MatButtonModule } from '@angular/material/button';

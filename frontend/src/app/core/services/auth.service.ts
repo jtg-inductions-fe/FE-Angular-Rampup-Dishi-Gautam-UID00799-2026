@@ -47,8 +47,13 @@ export class AuthService {
         this.restoreSession();
     }
 
-    register(registerData: RegisterRequest): Observable<ApiResponse<User>> {
-        return this.http.post<ApiResponse<User>>(`${this.apiUrl}/users/register`, registerData);
+    signup(
+        registerData: RegisterRequest,
+    ): Observable<ApiResponse<User>> {
+        return this.http.post<ApiResponse<User>>(
+            `${this.apiUrl}/users/register`,
+            registerData,
+        );
     }
 
     login(

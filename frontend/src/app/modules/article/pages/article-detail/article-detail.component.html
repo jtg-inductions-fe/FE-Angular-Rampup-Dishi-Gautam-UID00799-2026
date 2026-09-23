@@ -1,0 +1,49 @@
+<div class="article-detail">
+    <div class="article-detail__container">
+        <button class="article-detail__back" type="button" (click)="goBack()">← Back</button>
+
+        @if (article(); as currentArticle) {
+            <article class="article-detail__content">
+                <header class="article-detail__header">
+                    <div class="article-detail__meta">
+                        <span class="article-detail__author">
+                            {{ currentArticle.author }}
+                        </span>
+
+                        <span class="article-detail__separator">·</span>
+
+                        <span class="article-detail__date">
+                            {{ currentArticle.createdAt | date: 'dd-MM-yyyy' }}
+                        </span>
+                    </div>
+
+                    <h1 class="article-detail__title">
+                        {{ currentArticle.title }}
+                    </h1>
+
+                    <p class="article-detail__description">
+                        {{ currentArticle.shortDescription }}
+                    </p>
+
+                    <div class="article-detail__tags">
+                        @for (tag of currentArticle.tags; track tag) {
+                            <span class="article-detail__tag">
+                                {{ tag }}
+                            </span>
+                        }
+                    </div>
+                </header>
+
+                <div class="article-detail__image-wrapper">
+                    <img
+                        class="article-detail__image"
+                        [src]="currentArticle.image"
+                        [alt]="currentArticle.title"
+                    />
+                </div>
+
+                <div class="article-detail__body" [innerHTML]="currentArticle.description"></div>
+            </article>
+        }
+    </div>
+</div>
