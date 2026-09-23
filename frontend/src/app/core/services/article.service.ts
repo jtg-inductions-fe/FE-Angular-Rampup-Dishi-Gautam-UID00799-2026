@@ -19,4 +19,12 @@ export class ArticleService {
             .get<ApiResponse<ArticleListData>>(`${APP_CONSTANTS.apiUrl}/articles`, { params })
             .pipe(map((response) => response.data.data));
     }
+    getArticle(id:string):Observable<Article>{
+        return this.http.get<ArticleResponse>(
+            `${this.apiUrl}/${id}`,
+        )
+        .pipe(
+            map((response)=>response.data)
+        )
+    }
 }

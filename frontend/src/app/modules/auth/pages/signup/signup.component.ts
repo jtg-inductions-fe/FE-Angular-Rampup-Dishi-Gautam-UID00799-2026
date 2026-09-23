@@ -12,6 +12,7 @@ import { AUTH_FORM_FIELDS } from '@app/shared/constants/auth-form-fields';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 
 import { passwordMatchValidator } from './password-validator';
+import { SnackbarService } from '@app/shared/services/snackbar.service';
 
 @Component({
     selector: 'app-signup',
@@ -64,6 +65,7 @@ export class SignupComponent {
         private readonly formBuilder: NonNullableFormBuilder,
         private readonly authService: AuthService,
         private readonly router: Router,
+        private readonly snackbarService: SnackbarService,
     ) {}
 
     onSubmit(): void {
@@ -75,7 +77,7 @@ export class SignupComponent {
         const { username, email, password } = this.signupForm.getRawValue();
         this.isSubmitting = true;
         this.authService
-            .register({
+            .signup({
                 username,
                 email,
                 password,
@@ -86,8 +88,25 @@ export class SignupComponent {
                     this.isSubmitting = false;
                     this.router.navigate([this.routePaths.login]);
                 },
-                error: () => {
+
+                error: (error) => {
                     this.isSubmitting = false;
+
+                    if (error.status === 409) {
+                        this.snackbarService.open(
+                            error.error?.message ??
+                                'Username or email already exists.',
+                            'Close',
+                        );
+
+                        return;
+                    }
+
+                    this.snackbarService.open(
+                        error.error?.message ??
+                            'Registration failed. Please try again.',
+                        'Close',
+                    );
                 },
             });
     }
