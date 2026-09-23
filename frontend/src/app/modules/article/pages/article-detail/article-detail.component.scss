@@ -1,48 +1,32 @@
 @use 'abstracts' as ds;
 
 .article-detail {
-    min-height: 100vh;
-    padding: ds.px-to-rem(32px) ds.px-to-rem(24px);
-    background: ds.$color-background;
-
-    &__container {
-        max-width: ds.px-to-rem(1120px);
-        margin: 0 auto;
-    }
+    width: 100%;
+    max-width: ds.px-to-rem(740);
+    margin: 0 auto;
+    padding: ds.px-to-rem(24) ds.px-to-rem(20) ds.px-to-rem(64);
 
     &__back {
-        display: inline-flex;
-        align-items: center;
-        margin-bottom: ds.px-to-rem(48px);
+        margin-bottom: ds.px-to-rem(32);
         padding: 0;
         border: 0;
         background: transparent;
         color: ds.$color-text-secondary;
-        font-size: ds.px-to-rem(14px);
+        font-size: ds.px-to-rem(14);
         cursor: pointer;
-
-        &:hover {
-            color: ds.$color-text-primary;
-        }
-    }
-
-    &__content {
-        max-width: ds.px-to-rem(760px);
-        margin: 0 auto;
     }
 
     &__header {
-        margin-bottom: ds.px-to-rem(40px);
+        margin-bottom: ds.px-to-rem(32);
     }
 
     &__meta {
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: ds.px-to-rem(8px);
-        margin-bottom: ds.px-to-rem(20px);
+        gap: ds.px-to-rem(8);
+        margin-bottom: ds.px-to-rem(20);
         color: ds.$color-text-secondary;
-        font-size: ds.px-to-rem(14px);
+        font-size: ds.px-to-rem(14);
     }
 
     &__author {
@@ -54,103 +38,85 @@
         color: ds.$color-text-muted;
     }
 
+    &__date {
+        color: ds.$color-text-secondary;
+    }
+
     &__title {
-        margin: 0 0 ds.px-to-rem(20px);
+        margin: 0 0 ds.px-to-rem(16);
         color: ds.$color-text-primary;
-        font-size: ds.px-to-rem(52px);
-        line-height: 1.08;
+        font-size: ds.px-to-rem(40);
         font-weight: 700;
-        letter-spacing: ds.px-to-rem(-1.5px);
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+        overflow-wrap: anywhere;
     }
 
     &__description {
-        margin: 0 0 ds.px-to-rem(24px);
+        margin: 0 0 ds.px-to-rem(20);
         color: ds.$color-text-secondary;
-        font-size: ds.px-to-rem(21px);
+        font-size: ds.px-to-rem(20);
         line-height: 1.5;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     &__tags {
         display: flex;
         flex-wrap: wrap;
-        gap: ds.px-to-rem(8px);
+        gap: ds.px-to-rem(8);
     }
 
     &__tag {
-        padding: ds.px-to-rem(7px) ds.px-to-rem(13px);
-        border-radius: ds.px-to-rem(20px);
-        background: ds.$color-surface;
+        padding: ds.px-to-rem(6) ds.px-to-rem(12);
+        border-radius: ds.px-to-rem(16);
+        background-color: ds.$color-surface;
         color: ds.$color-text-secondary;
-        font-size: ds.px-to-rem(13px);
+        font-size: ds.px-to-rem(13);
+        line-height: 1.4;
     }
 
     &__image-wrapper {
         width: 100%;
-        margin-bottom: ds.px-to-rem(48px);
+        margin-bottom: ds.px-to-rem(40);
         overflow: hidden;
-        border-radius: ds.px-to-rem(4px);
     }
 
     &__image {
         display: block;
         width: 100%;
-        max-height: ds.px-to-rem(520px);
+        height: auto;
+        max-height: ds.px-to-rem(520);
         object-fit: cover;
     }
 
     &__body {
         color: ds.$color-text-primary;
-        font-size: ds.px-to-rem(18px);
+        font-size: ds.px-to-rem(19);
         line-height: 1.8;
+        letter-spacing: -0.005em;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+
+        :global(p) {
+            margin: 0 0 ds.px-to-rem(24);
+        }
     }
 
     @include ds.respond-to(md) {
-        padding: ds.px-to-rem(48px) ds.px-to-rem(32px);
+        padding: ds.px-to-rem(48) ds.px-to-rem(24) ds.px-to-rem(80);
 
         &__title {
-            font-size: ds.px-to-rem(56px);
+            font-size: ds.px-to-rem(48);
         }
 
         &__description {
-            font-size: ds.px-to-rem(22px);
-        }
-    }
-
-    @include ds.respond-to(sm) {
-        padding: ds.px-to-rem(24px) ds.px-to-rem(16px);
-
-        &__back {
-            margin-bottom: ds.px-to-rem(32px);
-        }
-
-        &__title {
-            font-size: ds.px-to-rem(38px);
-            letter-spacing: ds.px-to-rem(-0.8px);
-        }
-
-        &__description {
-            font-size: ds.px-to-rem(18px);
+            font-size: ds.px-to-rem(21);
         }
 
         &__body {
-            font-size: ds.px-to-rem(17px);
-            line-height: 1.7;
-        }
-
-        &__image-wrapper {
-            margin-bottom: ds.px-to-rem(32px);
-        }
-    }
-
-    @include ds.respond-to(mobile-min) {
-        padding: ds.px-to-rem(20px) ds.px-to-rem(12px);
-
-        &__title {
-            font-size: ds.px-to-rem(32px);
-        }
-
-        &__meta {
-            font-size: ds.px-to-rem(13px);
+            font-size: ds.px-to-rem(20);
+            line-height: 1.8;
         }
     }
 }
