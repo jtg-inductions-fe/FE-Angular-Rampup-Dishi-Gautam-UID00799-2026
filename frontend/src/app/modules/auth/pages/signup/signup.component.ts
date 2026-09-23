@@ -81,7 +81,7 @@ export class SignupComponent {
         const { username, email, password } = this.signupForm.getRawValue();
         this.isSubmitting = true;
         this.authService
-            .register({
+            .signup({
                 username,
                 email,
                 password,
