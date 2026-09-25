@@ -19,6 +19,13 @@
             }
 
             @if (
+                articleForm.controls.title.hasError('minlength') &&
+                articleForm.controls.title.touched
+            ) {
+                <mat-error> Title must be at least 5 characters </mat-error>
+            }
+
+            @if (
                 articleForm.controls.title.hasError('maxlength') &&
                 articleForm.controls.title.touched
             ) {
@@ -40,14 +47,22 @@
                 formControlName="description"
                 [modules]="editorModules"
                 theme="snow"
-            >
-            </quill-editor>
+            ></quill-editor>
 
             @if (
                 articleForm.controls.description.hasError('required') &&
                 articleForm.controls.description.touched
             ) {
                 <span class="create-article__error"> Article content is required </span>
+            }
+
+            @if (
+                articleForm.controls.description.hasError('minlength') &&
+                articleForm.controls.description.touched
+            ) {
+                <span class="create-article__error">
+                    Article content must be at least 50 characters
+                </span>
             }
 
             @if (articleForm.controls.description.hasError('backend')) {
