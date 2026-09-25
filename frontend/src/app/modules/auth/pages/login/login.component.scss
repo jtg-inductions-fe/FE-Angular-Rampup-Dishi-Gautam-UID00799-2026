@@ -1,0 +1,68 @@
+@use 'abstracts' as ds;
+
+.login-page {
+    min-height: calc(100dvh - ds.px-to-rem(56));
+    padding: ds.px-to-rem(24);
+    display: grid;
+    place-items: center;
+
+    &__card {
+        width: 100%;
+        max-width: ds.px-to-rem(420);
+    }
+
+    &__header {
+        margin-bottom: ds.px-to-rem(28);
+        text-align: center;
+    }
+
+    &__title {
+        margin: 0 0 ds.px-to-rem(8);
+        color: ds.$color-text-primary;
+        font-size: ds.px-to-rem(28);
+        font-weight: 700;
+    }
+
+    &__subtitle {
+        margin: 0;
+        color: ds.$color-text-secondary;
+        font-size: ds.px-to-rem(15);
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: ds.px-to-rem(8);
+    }
+
+    &__field {
+        width: 100%;
+    }
+
+    &__button {
+        width: 100%;
+        margin-top: ds.px-to-rem(8);
+    }
+
+    &__register {
+        margin: ds.px-to-rem(24) 0 0;
+        text-align: center;
+        color: ds.$color-text-secondary;
+        font-size: ds.px-to-rem(14);
+    }
+
+    &__link {
+        color: ds.$color-text-primary;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    @include ds.respond-to(md) {
+        min-height: calc(100dvh - ds.px-to-rem(64));
+        padding: ds.px-to-rem(32);
+
+        &__title {
+            font-size: ds.px-to-rem(32);
+        }
+    }
+}
