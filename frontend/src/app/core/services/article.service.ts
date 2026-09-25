@@ -6,6 +6,8 @@ import {
     ArticleListData,
     ArticleListResponse,
     ArticleResponse,
+    CreateArticleRequest,
+    CreateArticleResponse,
 } from '../models/article.model';
 
 @Injectable({
@@ -23,12 +25,26 @@ export class ArticleService {
             .get<ArticleListResponse>(this.apiUrl, { params })
             .pipe(map((response) => response.data));
     }
-    getArticle(id:string):Observable<Article>{
-        return this.http.get<ArticleResponse>(
-            `${this.apiUrl}/${id}`,
-        )
-        .pipe(
-            map((response)=>response.data)
-        )
+    getArticle(id: string): Observable<Article> {
+        return this.http
+            .get<ArticleResponse>(`${this.apiUrl}/${id}`)
+            .pipe(map((response) => response.data));
     }
+    createArticle(article: CreateArticleRequest): Observable<Article> {
+        return this.http
+            .post<CreateArticleResponse>(this.apiUrl, article)
+            .pipe(map((response) => response.data));
+    }
+    updateArticle(id: string, article: CreateArticleRequest): Observable<Article> {
+        return this.http
+            .put<ArticleResponse>(`${this.apiUrl}/${id}`, article)
+            .pipe(map((response) => response.data));
+    }
+   deleteArticle(id: string): Observable<Article> {
+    return this.http
+        .delete<ArticleResponse>(`${this.apiUrl}/${id}`)
+        .pipe(
+            map((response) => response.data),
+        );
+}
 }

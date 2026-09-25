@@ -2,9 +2,13 @@
 
 .article-detail {
     width: 100%;
-    max-width: ds.px-to-rem(740);
-    margin: 0 auto;
     padding: ds.px-to-rem(24) ds.px-to-rem(20) ds.px-to-rem(64);
+
+    &__container {
+        width: 100%;
+        max-width: ds.px-to-rem(740);
+        margin: 0 auto;
+    }
 
     &__back {
         margin-bottom: ds.px-to-rem(32);
@@ -40,6 +44,10 @@
 
     &__date {
         color: ds.$color-text-secondary;
+    }
+
+    &__meta button {
+        margin-left: auto;
     }
 
     &__title {
@@ -97,10 +105,16 @@
         letter-spacing: -0.005em;
         overflow-wrap: anywhere;
         word-break: break-word;
+    }
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: ds.px-to-rem(8);
+        margin-bottom: ds.px-to-rem(24);
+    }
 
-        :global(p) {
-            margin: 0 0 ds.px-to-rem(24);
-        }
+    &__delete {
+        color: ds.$color-error;
     }
 
     @include ds.respond-to(md) {
@@ -116,7 +130,6 @@
 
         &__body {
             font-size: ds.px-to-rem(20);
-            line-height: 1.8;
         }
     }
 }

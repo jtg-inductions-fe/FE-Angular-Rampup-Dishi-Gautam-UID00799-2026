@@ -17,6 +17,29 @@
                         </span>
                     </div>
 
+                    @if (isArticleOwner(currentArticle.author)) {
+                        <div class="article-detail__actions">
+                            <button
+                                mat-flat-button
+                                color="primary"
+                                type="button"
+                                class="article-detail__edit"
+                                [routerLink]="['/articles', currentArticle.id, 'edit']"
+                            >
+                                Edit article
+                            </button>
+
+                            <button
+                                mat-stroked-button
+                                type="button"
+                                class="article-detail__delete"
+                                (click)="deleteArticle(currentArticle.id)"
+                            >
+                                Delete article
+                            </button>
+                        </div>
+                    }
+
                     <h1 class="article-detail__title">
                         {{ currentArticle.title }}
                     </h1>

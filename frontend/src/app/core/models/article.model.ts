@@ -18,11 +18,11 @@ export interface ArticleListData {
     pageSize: number;
 }
 
-export interface ArticleListResponse{
-    success:boolean,
-    message:string,
-    data:ArticleListData,
-    timeStamp:string
+export interface ArticleListResponse {
+    success: boolean;
+    message: string;
+    data: ArticleListData;
+    timeStamp: string;
 }
 
 export interface ArticleResponse {
@@ -30,4 +30,19 @@ export interface ArticleResponse {
     message: string;
     data: Article;
     timeStamp: string;
+}
+
+export interface CreateArticleRequest {
+    title: string;
+    shortDescription: string;
+    description: string;
+    image: string;
+    tags: string[];
+}
+
+export interface CreateArticleResponse {
+    success: boolean;
+    message: string;
+    data: Article;
+    timestamp: string;
 }

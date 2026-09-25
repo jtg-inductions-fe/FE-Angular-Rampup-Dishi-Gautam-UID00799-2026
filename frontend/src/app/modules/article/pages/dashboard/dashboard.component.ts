@@ -4,17 +4,19 @@ import { ArticleCardComponent } from '../../components/articles-card/articles-ca
 import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
 import { MatButtonModule } from '@angular/material/button';
+import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [DatePipe, ArticleCardComponent, MatButtonModule],
+    imports: [DatePipe, ArticleCardComponent, MatButtonModule,RouterLink],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
     private readonly articleService = inject(ArticleService);
-
+    protected readonly routePaths = ROUTE_PATHS;
     readonly articles = signal<Article[]>([]);
 
     ngOnInit(): void {
