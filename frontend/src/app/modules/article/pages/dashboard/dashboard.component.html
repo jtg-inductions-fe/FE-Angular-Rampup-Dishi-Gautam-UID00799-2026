@@ -6,7 +6,14 @@
             <p class="dashboard__description">Explore the latest stories and ideas.</p>
         </div>
 
-        <button mat-flat-button color="primary" type="button">Create article</button>
+        <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [routerLink]="routePaths.createArticle"
+        >
+            Create article
+        </button>
     </header>
 
     <main class="dashboard__article-list">
