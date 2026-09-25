@@ -1,7 +1,14 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpErrorResponse,
+} from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import {
+    BehaviorSubject,
+    Observable,
+    tap,
+} from 'rxjs';
 
 import {
     ApiResponse,
@@ -15,13 +22,19 @@ import {
     providedIn: 'root',
 })
 export class AuthService {
-    private readonly apiUrl = 'http://localhost:3000/api/v1';
+    private readonly apiUrl =
+        'http://localhost:3000/api/v1';
+
     private readonly tokenKey = 'folio_token';
 
     private readonly currentUserSubject =
         new BehaviorSubject<User | null>(null);
 
-    readonly currentUser$ = this.currentUserSubject.asObservable();
+    readonly currentUser$ =
+        this.currentUserSubject.asObservable();
+
+    readonly currentUser =
+        signal<User | null>(null);
 
     readonly isAuthenticated = signal<boolean>(
         !!localStorage.getItem(this.tokenKey),
@@ -30,7 +43,9 @@ export class AuthService {
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
-    ) {}
+    ) {
+        this.restoreSession();
+    }
 
     register(
         registerData: RegisterRequest,
@@ -41,7 +56,9 @@ export class AuthService {
         );
     }
 
-    login(loginData: LoginRequest): Observable<ApiResponse<LoginData>> {
+    login(
+        loginData: LoginRequest,
+    ): Observable<ApiResponse<LoginData>> {
         return this.http
             .post<ApiResponse<LoginData>>(
                 `${this.apiUrl}/users/login`,
@@ -49,13 +66,14 @@ export class AuthService {
             )
             .pipe(
                 tap((response) => {
-                    const token = response.data.token;
-                    const user = response.data.user;
+                    const { token, user } = response.data;
 
-                    localStorage.setItem(this.tokenKey, token);
+                    localStorage.setItem(
+                        this.tokenKey,
+                        token,
+                    );
 
-                    this.currentUserSubject.next(user);
-                    this.isAuthenticated.set(true);
+                    this.setUser(user);
                 }),
             );
     }
@@ -70,11 +88,44 @@ export class AuthService {
         return localStorage.getItem(this.tokenKey);
     }
 
-    logout ():void{
-        localStorage.removeItem(this.tokenKey);
-        this.currentUserSubject.next(null);
-        this.isAuthenticated.set(false);
-        this.router.navigate(['/login'])
+    getUser(): User | null {
+        return this.currentUserSubject.value;
     }
 
+    logout(): void {
+        localStorage.removeItem(this.tokenKey);
+
+        this.currentUserSubject.next(null);
+        this.currentUser.set(null);
+        this.isAuthenticated.set(false);
+
+        this.router.navigate(['/login']);
+    }
+
+    private restoreSession(): void {
+        const token = this.getToken();
+
+        if (!token) {
+            return;
+        }
+
+        this.getProfile().subscribe({
+            next: (response) => {
+                this.setUser(response.data);
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error(
+                    'Session restore failed:',
+                    error.status,
+                    error.error,
+                );
+            },
+        });
+    }
+
+    private setUser(user: User): void {
+        this.currentUserSubject.next(user);
+        this.currentUser.set(user);
+        this.isAuthenticated.set(true);
+    }
 }
