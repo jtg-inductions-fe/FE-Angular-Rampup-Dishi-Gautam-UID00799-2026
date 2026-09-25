@@ -1,16 +1,28 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './modules/home-page/home-page.component';
-import { NotFoundComponent } from './shared/components/not-found/not-found.component';
-import { authGuard } from './core/guards/auth.guards';
 import { authRoutes } from './modules/auth/auth.routes';
+import { authGuard } from './core/guards/auth.guards';
+import { HomePageComponent } from './modules/home-page/home-page.component';
+import {NotFoundComponent} from './shared/components/not-found/not-found.component'
 
 export const routes: Routes = [
+    ...authRoutes,
     {
         path: '',
-        component: HomePageComponent,
-        canActivate:[authGuard]
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                component: HomePageComponent,
+            },
+            {
+                path: '',
+                loadChildren: () =>
+                    import('./modules/article/articles.routes').then(
+                        (module) => module.articlesRoutes,
+                    ),
+            },
+        ],
     },
-    ...authRoutes,
     {
         path: '**',
         component: NotFoundComponent,

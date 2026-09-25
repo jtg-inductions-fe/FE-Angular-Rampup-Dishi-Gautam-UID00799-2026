@@ -27,8 +27,7 @@ export class AuthService {
 
     private readonly tokenKey = 'folio_token';
 
-    private readonly currentUserSubject =
-        new BehaviorSubject<User | null>(null);
+    private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
 
     readonly currentUser$ =
         this.currentUserSubject.asObservable();
@@ -36,9 +35,7 @@ export class AuthService {
     readonly currentUser =
         signal<User | null>(null);
 
-    readonly isAuthenticated = signal<boolean>(
-        !!localStorage.getItem(this.tokenKey),
-    );
+    readonly isAuthenticated = signal<boolean>(!!localStorage.getItem(this.tokenKey));
 
     constructor(
         private readonly http: HttpClient,
@@ -47,13 +44,8 @@ export class AuthService {
         this.restoreSession();
     }
 
-    register(
-        registerData: RegisterRequest,
-    ): Observable<ApiResponse<User>> {
-        return this.http.post<ApiResponse<User>>(
-            `${this.apiUrl}/users/register`,
-            registerData,
-        );
+    register(registerData: RegisterRequest): Observable<ApiResponse<User>> {
+        return this.http.post<ApiResponse<User>>(`${this.apiUrl}/users/register`, registerData);
     }
 
     login(
@@ -79,9 +71,7 @@ export class AuthService {
     }
 
     getProfile(): Observable<ApiResponse<User>> {
-        return this.http.get<ApiResponse<User>>(
-            `${this.apiUrl}/users/profile`,
-        );
+        return this.http.get<ApiResponse<User>>(`${this.apiUrl}/users/profile`);
     }
 
     getToken(): string | null {
