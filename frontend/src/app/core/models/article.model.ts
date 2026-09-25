@@ -17,3 +17,11 @@ export interface ArticleListData {
     currentPage: number;
     pageSize: number;
 }
+
+export interface CreateArticleRequest {
+    title: string;
+    shortDescription: string;
+    description: string;
+    image: string;
+    tags: string[];
+}

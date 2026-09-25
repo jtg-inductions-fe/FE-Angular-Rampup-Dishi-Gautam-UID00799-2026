@@ -1,0 +1,170 @@
+<section class="update-article">
+    <header class="update-article__header">
+        <h2 class="update-article__title">Update article</h2>
+
+        <p class="update-article__description">
+            Update your story and keep it fresh for the Folio community.
+        </p>
+    </header>
+
+    @if (isLoading) {
+        <div
+            class="update-article__loading"
+            role="status"
+            aria-label="Loading article"
+        >
+            Loading article...
+        </div>
+    } @else {
+        <form
+            class="update-article__form"
+            [formGroup]="articleForm"
+            (ngSubmit)="onSubmit()"
+        >
+            <mat-form-field
+                appearance="outline"
+                class="update-article__field"
+            >
+                <mat-label>Title</mat-label>
+
+                <input
+                    matInput
+                    type="text"
+                    placeholder="Enter article title"
+                    formControlName="title"
+                />
+
+                @if (
+                    articleForm.controls.title.hasError('required') &&
+                    articleForm.controls.title.touched
+                ) {
+                    <mat-error>Title is required</mat-error>
+                }
+
+                @if (
+                    articleForm.controls.title.hasError('maxlength') &&
+                    articleForm.controls.title.touched
+                ) {
+                    <mat-error>
+                        Title cannot exceed 200 characters
+                    </mat-error>
+                }
+            </mat-form-field>
+
+            <div class="update-article__editor">
+                <label class="update-article__editor-label">
+                    Article content
+                </label>
+
+                <quill-editor
+                    class="update-article__editor-control"
+                    formControlName="description"
+                    [modules]="editorModules"
+                    theme="snow"
+                >
+                </quill-editor>
+
+                @if (
+                    articleForm.controls.description.hasError('required') &&
+                    articleForm.controls.description.touched
+                ) {
+                    <span class="update-article__error">
+                        Article content is required
+                    </span>
+                }
+            </div>
+
+            <div class="update-article__image">
+                <label
+                    class="update-article__image-label"
+                    for="article-image"
+                >
+                    Feature image
+                </label>
+
+                <input
+                    id="article-image"
+                    type="file"
+                    accept="image/*"
+                    (change)="onImageSelected($event)"
+                />
+
+                @if (articleForm.controls.image.value) {
+                    <img
+                        class="update-article__image-preview"
+                        [src]="articleForm.controls.image.value"
+                        alt="Article preview"
+                    />
+                }
+            </div>
+
+            <div class="update-article__tags">
+                <mat-form-field
+                    appearance="outline"
+                    class="update-article__field"
+                >
+                    <mat-label>Tags</mat-label>
+
+                    <input
+                        matInput
+                        type="text"
+                        placeholder="Enter a tag"
+                        [value]="tagInput"
+                        (input)="onTagInput($event)"
+                        (keydown.enter)="
+                            $event.preventDefault();
+                            addTag()
+                        "
+                    />
+                </mat-form-field>
+
+                @if (articleForm.controls.tags.value?.length) {
+                    <mat-chip-set aria-label="Article tags">
+                        @for (
+                            tag of articleForm.controls.tags.value;
+                            track tag
+                        ) {
+                            <mat-chip
+                                [removable]="true"
+                                (removed)="removeTag(tag)"
+                            >
+                                {{ tag }}
+
+                                <button
+                                    matChipRemove
+                                    type="button"
+                                    [attr.aria-label]="'Remove ' + tag"
+                                >
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </mat-chip>
+                        }
+                    </mat-chip-set>
+                }
+            </div>
+
+            <div class="update-article__actions">
+                <button
+                    mat-stroked-button
+                    type="button"
+                    [routerLink]="routePaths.dashboard"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="isSubmitting"
+                >
+                    {{
+                        isSubmitting
+                            ? 'Updating...'
+                            : 'Update article'
+                    }}
+                </button>
+            </div>
+        </form>
+    }
+</section>

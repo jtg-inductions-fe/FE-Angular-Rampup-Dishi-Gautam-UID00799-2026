@@ -26,6 +26,8 @@
         "@angular/platform-browser-dynamic": "^17.3.0",
         "@angular/router": "^17.3.0",
         "material-icons": "^1.13.14",
+        "ngx-quill": "^25.3.3",
+        "quill": "^2.0.3",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.14.3"
