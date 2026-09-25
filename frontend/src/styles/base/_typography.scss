@@ -3,17 +3,10 @@
 @use '../abstracts/variables' as variables;
 @use '../abstracts/mixins' as mixins;
 
-@include mixins.font-face(
-    map.get(variables.$font-configs, inter),
-    variables.$font-weight-range
-);
+@include mixins.font-face(map.get(variables.$font-configs, inter), variables.$font-weight-range);
 
 body {
-    @include mixins.text-style(
-        variables.$font-family-primary,
-        function.px-to-rem(16px),
-        regular
-    );
+    @include mixins.text-style(variables.$font-family-primary, function.px-to-rem(16px), regular);
 
     color: variables.$color-text-primary;
 }
@@ -29,21 +22,13 @@ h6 {
 }
 
 a {
-    @include mixins.text-style(
-        variables.$font-family-primary,
-        function.px-to-rem(16px),
-        medium
-    );
+    @include mixins.text-style(variables.$font-family-primary, function.px-to-rem(16px), medium);
 
     text-decoration: none;
 }
 
 p {
-    @include mixins.text-style(
-        variables.$font-family-primary,
-        inherit,
-        regular
-    );
+    @include mixins.text-style(variables.$font-family-primary, inherit, regular);
 }
 
 @font-face {

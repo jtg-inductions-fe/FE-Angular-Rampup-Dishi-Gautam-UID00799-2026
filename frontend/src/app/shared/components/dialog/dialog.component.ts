@@ -1,29 +1,22 @@
 import { Component, inject } from '@angular/core';
-import {
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-    MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+
 import { DialogData } from '@app/core/models/dialog.model';
 
 @Component({
-    selector: 'app-confirm-dialog',
+    selector: 'app-dialog',
     standalone: true,
-    imports: [MatDialogModule, MatButtonModule],
-    templateUrl: './confirm-dialog.component.html',
-    styleUrl: './confirm-dialog.component.scss',
+    imports: [MatButtonModule, MatDialogModule],
+    templateUrl: './dialog.component.html',
+    styleUrl: './dialog.component.scss',
 })
-export class ConfirmDialogComponent {
-    public readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+export class DialogComponent {
+    protected readonly data = inject<DialogData>(MAT_DIALOG_DATA);
 
-    private readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
+    private readonly dialogRef = inject(MatDialogRef<DialogComponent>);
 
-    onCancel(): void {
-        this.dialogRef.close(false);
-    }
-
-    onConfirm(): void {
-        this.dialogRef.close(true);
+    close(): void {
+        this.dialogRef.close();
     }
 }

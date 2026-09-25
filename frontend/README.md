@@ -51,3 +51,4 @@ Make sure Node.js and npm are installed.
 
 ```bash
 npm install
+```

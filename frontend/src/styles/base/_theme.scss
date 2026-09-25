@@ -3,19 +3,9 @@
 
 @include mat.core();
 
-$primary-palette: mat.define-palette(
-    variables.$material-primary-palette,
-    900,
-    800,
-    900
-);
+$primary-palette: mat.define-palette(variables.$material-primary-palette, 900, 800, 900);
 
-$accent-palette: mat.define-palette(
-    mat.$grey-palette,
-    700,
-    500,
-    900
-);
+$accent-palette: mat.define-palette(mat.$grey-palette, 700, 500, 900);
 
 $typography: mat.define-typography-config(
     $font-family: 'Inter, Arial, sans-serif',
@@ -26,10 +16,10 @@ $theme: mat.define-light-theme(
         color: (
             primary: $primary-palette,
             accent: $accent-palette,
-            warn: mat.define-palette(mat.$red-palette)
+            warn: mat.define-palette(mat.$red-palette),
         ),
         typography: $typography,
-        density: 0
+        density: 0,
     )
 );
 
