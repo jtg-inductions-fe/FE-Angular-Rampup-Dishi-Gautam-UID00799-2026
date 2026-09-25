@@ -1,0 +1,17 @@
+@use 'abstracts' as ds;
+
+.dialog {
+    &__content {
+        color: ds.$color-text-secondary;
+    }
+
+    &__message {
+        margin: 0;
+        white-space: pre-line;
+        line-height: 1.5;
+    }
+
+    &__actions {
+        gap: ds.px-to-rem(8px);
+    }
+}

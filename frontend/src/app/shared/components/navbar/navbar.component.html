@@ -1,0 +1,41 @@
+<mat-toolbar class="navbar">
+    <a mat-button [routerLink]="routePaths.home" class="navbar__brand"> Folio </a>
+
+    <div class="navbar__search">
+        <mat-form-field appearance="outline" class="navbar__search-bar" subscriptSizing="dynamic">
+            <mat-icon matPrefix>search</mat-icon>
+
+            <input
+                matInput
+                type="search"
+                placeholder="Search articles"
+                aria-label="Search articles"
+            />
+        </mat-form-field>
+    </div>
+
+    <nav class="navbar__navigation">
+        <a mat-button [routerLink]="routePaths.home"> Articles </a>
+
+        <a mat-button [routerLink]="routePaths.login"> Login </a>
+
+        <a mat-flat-button color="primary" [routerLink]="routePaths.register"> Register </a>
+    </nav>
+
+    <button
+        mat-icon-button
+        [matMenuTriggerFor]="mobileMenu"
+        class="navbar__mobile-menu"
+        aria-label="Open navigation menu"
+    >
+        <mat-icon>menu</mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-menu #mobileMenu="matMenu">
+    <a mat-menu-item [routerLink]="routePaths.home"> Articles </a>
+
+    <a mat-menu-item [routerLink]="routePaths.login"> Login </a>
+
+    <a mat-menu-item [routerLink]="routePaths.register"> Register </a>
+</mat-menu>

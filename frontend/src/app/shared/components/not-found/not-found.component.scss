@@ -1,0 +1,52 @@
+@use 'abstracts' as ds;
+
+.not-found-page {
+    min-height: calc(100dvh - ds.px-to-rem(56));
+    padding: ds.px-to-rem(24);
+    display: grid;
+    place-items: center;
+
+    &__card {
+        width: 100%;
+        max-width: ds.px-to-rem(600);
+        text-align: center;
+    }
+
+    &__label {
+        margin-bottom: ds.px-to-rem(8);
+        color: ds.$color-text-secondary;
+        font-size: ds.px-to-rem(14);
+        font-weight: 500;
+        letter-spacing: 0.08em;
+    }
+
+    &__code {
+        margin: 0;
+        color: ds.$color-text-primary;
+        font-size: ds.px-to-rem(64);
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    &__message {
+        margin: ds.px-to-rem(16) 0 ds.px-to-rem(24);
+        color: ds.$color-text-secondary;
+        font-size: ds.px-to-rem(16);
+        line-height: 1.5;
+    }
+}
+
+@include ds.respond-to(md) {
+    .not-found-page {
+        min-height: calc(100dvh - ds.px-to-rem(64));
+        padding: ds.px-to-rem(32);
+
+        &__code {
+            font-size: ds.px-to-rem(80);
+        }
+
+        &__message {
+            font-size: ds.px-to-rem(18);
+        }
+    }
+}
