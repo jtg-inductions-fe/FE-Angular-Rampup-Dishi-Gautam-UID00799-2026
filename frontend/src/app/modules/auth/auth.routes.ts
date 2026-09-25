@@ -10,7 +10,7 @@ export const authRoutes: Routes = [
         canActivate: [guestGuard],
     },
     {
-        path: 'register',
+        path: 'signup',
         component: SignupComponent,
         canActivate: [guestGuard],
     },
