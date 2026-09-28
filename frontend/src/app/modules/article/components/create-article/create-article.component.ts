@@ -98,11 +98,9 @@ export class CreateArticleComponent implements OnInit {
     protected onImageSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         const file = input.files?.[0];
-
         if (!file) {
             return;
         }
-
         const reader = new FileReader();
 
         reader.onload = () => {
@@ -125,13 +123,11 @@ export class CreateArticleComponent implements OnInit {
 
     protected addTag(): void {
         const tag = this.tagInput.trim();
-
         if (!tag) {
             return;
         }
 
         const tags = this.articleForm.controls.tags.value;
-
         if (tags.includes(tag)) {
             this.tagInput = '';
             return;
@@ -206,6 +202,7 @@ export class CreateArticleComponent implements OnInit {
 
                     this.articleForm.markAsPristine();
                 },
+
                 error: (error: HttpErrorResponse) => {
                     this.handleArticleLoadError(error);
                 },
@@ -245,7 +242,6 @@ export class CreateArticleComponent implements OnInit {
 
     private applyBackendValidationErrors(error: HttpErrorResponse): void {
         const validationErrors = error.error?.error as ArticleValidationError[] | undefined;
-
         if (!Array.isArray(validationErrors)) {
             this.openSaveErrorDialog(error.error?.message ?? 'Please check your article details.');
             return;
@@ -253,16 +249,13 @@ export class CreateArticleComponent implements OnInit {
 
         validationErrors.forEach(({ field, message }) => {
             const control = this.articleForm.get(field);
-
             if (!control) {
                 return;
             }
-
             control.setErrors({
                 ...control.errors,
                 backend: message,
             });
-
             control.markAsTouched();
         });
     }
@@ -280,11 +273,9 @@ export class CreateArticleComponent implements OnInit {
     private minPlainTextLength(minimumLength: number): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             const plainText = this.getPlainText(control.value ?? '');
-
             if (!plainText) {
                 return null;
             }
-
             return plainText.length >= minimumLength
                 ? null
                 : {

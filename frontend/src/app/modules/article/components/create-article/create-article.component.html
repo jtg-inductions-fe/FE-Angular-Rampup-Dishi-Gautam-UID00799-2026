@@ -13,11 +13,24 @@
         </p>
     </header>
 
-    <form class="create-article__form" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="create-article__field">
+    <form
+        class="create-article__form"
+        [formGroup]="articleForm"
+        (ngSubmit)="onSubmit()"
+    >
+        <!-- Title -->
+        <mat-form-field
+            appearance="outline"
+            class="create-article__field"
+        >
             <mat-label>Title</mat-label>
 
-            <input matInput type="text" placeholder="Enter article title" formControlName="title" />
+            <input
+                matInput
+                type="text"
+                placeholder="Enter article title"
+                formControlName="title"
+            />
 
             @if (
                 articleForm.controls.title.hasError('required') &&
@@ -31,7 +44,9 @@
                 articleForm.controls.title.hasError('minlength') &&
                 articleForm.controls.title.touched
             ) {
-                <mat-error> Title must be at least 5 characters </mat-error>
+                <mat-error>
+                    Title must be at least 5 characters
+                </mat-error>
             }
 
             @if (
@@ -40,7 +55,9 @@
                 articleForm.controls.title.hasError('maxlength') &&
                 articleForm.controls.title.touched
             ) {
-                <mat-error> Title cannot exceed 200 characters </mat-error>
+                <mat-error>
+                    Title cannot exceed 200 characters
+                </mat-error>
             }
 
             @if (articleForm.controls.title.hasError('backend')) {
@@ -79,6 +96,7 @@
             }
         </mat-form-field>
 
+        <!-- Article content -->
         <div class="create-article__editor">
             <app-rich-text-editor
                 [control]="articleForm.controls.description"
@@ -87,14 +105,20 @@
             />
 
             @if (
-                articleForm.controls.description.hasError('required') &&
+                articleForm.controls.description.hasError(
+                    'required'
+                ) &&
                 articleForm.controls.description.touched
             ) {
-                <span class="create-article__error"> Article content is required </span>
+                <span class="create-article__error">
+                    Article content is required
+                </span>
             }
 
             @if (
-                articleForm.controls.description.hasError('minlength') &&
+                articleForm.controls.description.hasError(
+                    'minlength'
+                ) &&
                 articleForm.controls.description.touched
             ) {
                 <span class="create-article__error">
@@ -102,15 +126,29 @@
                 </span>
             }
 
-            @if (articleForm.controls.description.hasError('backend')) {
+            @if (
+                articleForm.controls.description.hasError(
+                    'backend'
+                )
+            ) {
                 <span class="create-article__error">
-                    {{ articleForm.controls.description.getError('backend') }}
+                    {{
+                        articleForm.controls.description.getError(
+                            'backend'
+                        )
+                    }}
                 </span>
             }
         </div>
 
+        <!-- Feature image -->
         <div class="create-article__image">
-            <label class="create-article__image-label" for="article-image"> Feature image </label>
+            <label
+                class="create-article__image-label"
+                for="article-image"
+            >
+                Feature image
+            </label>
 
             <input
                 id="article-image"
@@ -131,18 +169,30 @@
                 articleForm.controls.image.hasError('required') &&
                 articleForm.controls.image.touched
             ) {
-                <span class="create-article__error"> Feature image is required </span>
+                <span class="create-article__error">
+                    Feature image is required
+                </span>
             }
 
-            @if (articleForm.controls.image.hasError('backend')) {
+            @if (
+                articleForm.controls.image.hasError('backend')
+            ) {
                 <span class="create-article__error">
-                    {{ articleForm.controls.image.getError('backend') }}
+                    {{
+                        articleForm.controls.image.getError(
+                            'backend'
+                        )
+                    }}
                 </span>
             }
         </div>
 
+        <!-- Tags -->
         <div class="create-article__tags">
-            <mat-form-field appearance="outline" class="create-article__field">
+            <mat-form-field
+                appearance="outline"
+                class="create-article__field"
+            >
                 <mat-label>Tags</mat-label>
 
                 <input
@@ -151,18 +201,39 @@
                     placeholder="Enter a tag"
                     [value]="tagInput"
                     (input)="onTagInput($event)"
-                    (keydown.enter)="$event.preventDefault(); addTag()"
+                    (keydown.enter)="
+                        $event.preventDefault();
+                        addTag()
+                    "
                 />
             </mat-form-field>
 
-            @if (articleForm.controls.tags.value?.length) {
-                <mat-chip-set aria-label="Article tags">
-                    @for (tag of articleForm.controls.tags.value; track tag) {
-                        <mat-chip [removable]="true" (removed)="removeTag(tag)">
+            @if (
+                articleForm.controls.tags.value?.length
+            ) {
+                <mat-chip-set
+                    aria-label="Article tags"
+                >
+                    @for (
+                        tag of articleForm.controls.tags.value;
+                        track tag
+                    ) {
+                        <mat-chip
+                            [removable]="true"
+                            (removed)="removeTag(tag)"
+                        >
                             {{ tag }}
 
-                            <button matChipRemove type="button" [attr.aria-label]="'Remove ' + tag">
-                                <mat-icon>cancel</mat-icon>
+                            <button
+                                matChipRemove
+                                type="button"
+                                [attr.aria-label]="
+                                    'Remove ' + tag
+                                "
+                            >
+                                <mat-icon>
+                                    cancel
+                                </mat-icon>
                             </button>
                         </mat-chip>
                     }
@@ -170,18 +241,28 @@
             }
 
             @if (
-                articleForm.controls.tags.hasError('required') && articleForm.controls.tags.touched
+                articleForm.controls.tags.hasError('required') &&
+                articleForm.controls.tags.touched
             ) {
-                <span class="create-article__error"> At least one tag is required </span>
+                <span class="create-article__error">
+                    At least one tag is required
+                </span>
             }
 
-            @if (articleForm.controls.tags.hasError('backend')) {
+            @if (
+                articleForm.controls.tags.hasError('backend')
+            ) {
                 <span class="create-article__error">
-                    {{ articleForm.controls.tags.getError('backend') }}
+                    {{
+                        articleForm.controls.tags.getError(
+                            'backend'
+                        )
+                    }}
                 </span>
             }
         </div>
 
+        <!-- Actions -->
         <div class="create-article__actions">
             <button mat-stroked-button type="button" [routerLink]="['/', routePaths.dashboard]">
                 Cancel
