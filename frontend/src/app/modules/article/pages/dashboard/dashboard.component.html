@@ -25,6 +25,101 @@
 
                 <p class="dashboard__empty-description">There are no articles available yet.</p>
             </div>
-        }
-    </main>
-</section>
+            <div class="dashboard__filter-form">
+                <mat-form-field appearance="outline" class="dashboard__filter-field">
+                    <mat-label>Author name</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        placeholder="Enter author name"
+                        [formControl]="authorControl"
+                    />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="dashboard__filter-field">
+                    <mat-label>Tags</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        placeholder="angular, javascript"
+                        [formControl]="tagsControl"
+                    />
+                    <mat-hint> Separate multiple tags with commas. </mat-hint>
+                </mat-form-field>
+            </div>
+            <div class="dashboard__filter-actions">
+                <button
+                    mat-stroked-button
+                    type="button"
+                    (click)="clearFilters(); filterDrawer.close()"
+                >
+                    Clear
+                </button>
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="button"
+                    (click)="applyFilters(); filterDrawer.close()"
+                >
+                    Apply filters
+                </button>
+            </div>
+        </div>
+    </mat-drawer>
+    <section class="dashboard">
+        <header class="dashboard__header">
+            <div class="dashboard__heading">
+                <h1 class="dashboard__title">
+                    @if (search()) {
+                        Search results
+                    } @else {
+                        Articles
+                    }
+                </h1>
+                <p class="dashboard__description">
+                    @if (search()) {
+                        Showing results for "{{ search() }}"
+                    } @else {
+                        Explore the latest stories and ideas.
+                    }
+                </p>
+            </div>
+
+            <div class="dashboard__actions">
+                <button mat-stroked-button type="button" (click)="filterDrawer.open()">
+                    <mat-icon>filter_list</mat-icon>
+                    Filters
+                </button>
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="button"
+                    [routerLink]="routePaths.createArticle"
+                >
+                    Create article
+                </button>
+            </div>
+        </header>
+        <main class="dashboard__article-list">
+            @for (article of articles(); track article.id) {
+                <app-article-card [article]="article" />
+            } @empty {
+                <div class="dashboard__empty-state">
+                    <h2 class="dashboard__empty-title">No articles found</h2>
+
+                    <p class="dashboard__empty-description">
+                        @if (search()) {
+                            No articles match "{{ search() }}".
+                        } @else {
+                            There are no articles available yet.
+                        }
+                    </p>
+                </div>
+            }
+        </main>
+        <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (pageChange)="changePage($event)"
+/>
+    </section>
+</mat-drawer-container>
