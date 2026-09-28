@@ -11,36 +11,37 @@ import { APP_CONSTANTS } from '@app/shared/constants/app.constants';
 })
 export class ArticleService {
     private readonly http = inject(HttpClient);
+    private readonly apiUrl = `${APP_CONSTANTS.apiUrl}/articles`;
 
     getArticles(page = 1, pageSize = 10): Observable<Article[]> {
         const params = new HttpParams().set('page', page).set('pageSize', pageSize);
 
         return this.http
-            .get<ApiResponse<ArticleListData>>(`${APP_CONSTANTS.apiUrl}/articles`, { params })
+            .get<ApiResponse<ArticleListData>>(this.apiUrl, { params })
             .pipe(map((response) => response.data.data));
     }
 
     getArticle(id: string): Observable<Article> {
         return this.http
-            .get<ApiResponse<Article>>(`${APP_CONSTANTS.apiUrl}/articles/${id}`)
+            .get<ApiResponse<Article>>(`${this.apiUrl}/${id}`)
             .pipe(map((response) => response.data));
     }
 
     createArticle(article: CreateArticleRequest): Observable<Article> {
         return this.http
-            .post<ApiResponse<Article>>(`${APP_CONSTANTS.apiUrl}/articles`, article)
+            .post<ApiResponse<Article>>(this.apiUrl, article)
             .pipe(map((response) => response.data));
     }
 
     updateArticle(id: string, article: CreateArticleRequest): Observable<Article> {
         return this.http
-            .put<ApiResponse<Article>>(`${APP_CONSTANTS.apiUrl}/articles/${id}`, article)
+            .put<ApiResponse<Article>>(`${this.apiUrl}/${id}`, article)
             .pipe(map((response) => response.data));
     }
 
     deleteArticle(id: string): Observable<Article> {
         return this.http
-            .delete<ApiResponse<Article>>(`${APP_CONSTANTS.apiUrl}/articles/${id}`)
+            .delete<ApiResponse<Article>>(`${this.apiUrl}/${id}`)
             .pipe(map((response) => response.data));
     }
 }

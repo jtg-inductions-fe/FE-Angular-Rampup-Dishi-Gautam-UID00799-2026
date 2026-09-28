@@ -22,7 +22,6 @@ import { SnackbarService } from '@app/shared/services/snackbar.service';
 })
 export class ArticleDetailComponent implements OnInit {
     protected readonly article = signal<Article | null>(null);
-
     private readonly location = inject(Location);
     private readonly userService = inject(UserService);
     private readonly route = inject(ActivatedRoute);
@@ -71,7 +70,6 @@ export class ArticleDetailComponent implements OnInit {
 
             });
     }
-
     protected goBack(): void {
         this.location.back();
     }

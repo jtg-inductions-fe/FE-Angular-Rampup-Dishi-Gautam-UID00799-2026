@@ -13,10 +13,13 @@ import { DialogData } from '@app/core/models/dialog.model';
 })
 export class DialogComponent {
     protected readonly data = inject<DialogData>(MAT_DIALOG_DATA);
-
     private readonly dialogRef = inject(MatDialogRef<DialogComponent>);
 
-    close(): void {
-        this.dialogRef.close();
+    protected confirm(): void {
+        this.dialogRef.close(true);
+    }
+
+    protected cancel(): void {
+        this.dialogRef.close(false);
     }
 }
