@@ -31,7 +31,14 @@
                 </div>
             }
 
-            <button mat-button type="button" class="article-card__read-button">Read more</button>
+            <button
+                mat-button
+                type="button"
+                class="article-card__read-button"
+                [routerLink]="['/articles', article.id]"
+            >
+                Read more
+            </button>
         </div>
     </div>
 

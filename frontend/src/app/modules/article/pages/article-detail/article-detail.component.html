@@ -1,6 +1,9 @@
 <div class="article-detail">
     <div class="article-detail__container">
-        <button class="article-detail__back" type="button" (click)="goBack()">← Back</button>
+        <button mat-button class="article-detail__back" type="button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            <span>Back</span>
+        </button>
 
         @if (article(); as currentArticle) {
             <article class="article-detail__content">
@@ -10,12 +13,35 @@
                             {{ currentArticle.author }}
                         </span>
 
-                        <span class="article-detail__separator">·</span>
+                        <span class="article-detail__separator"> · </span>
 
                         <span class="article-detail__date">
                             {{ currentArticle.createdAt | date: 'dd-MM-yyyy' }}
                         </span>
                     </div>
+
+                    @if (isArticleOwner(currentArticle.author)) {
+                        <div class="article-detail__actions">
+                            <button
+                                mat-flat-button
+                                color="primary"
+                                type="button"
+                                class="article-detail__edit"
+                                [routerLink]="['/', 'articles', currentArticle.id, 'edit']"
+                            >
+                                Edit article
+                            </button>
+
+                            <button
+                                mat-stroked-button
+                                type="button"
+                                class="article-detail__delete"
+                                (click)="deleteArticle(currentArticle.id)"
+                            >
+                                Delete article
+                            </button>
+                        </div>
+                    }
 
                     <h1 class="article-detail__title">
                         {{ currentArticle.title }}
@@ -25,13 +51,15 @@
                         {{ currentArticle.shortDescription }}
                     </p>
 
-                    <div class="article-detail__tags">
-                        @for (tag of currentArticle.tags; track tag) {
-                            <span class="article-detail__tag">
-                                {{ tag }}
-                            </span>
-                        }
-                    </div>
+                    @if (currentArticle.tags.length) {
+                        <div class="article-detail__tags">
+                            @for (tag of currentArticle.tags; track tag) {
+                                <span class="article-detail__tag">
+                                    {{ tag }}
+                                </span>
+                            }
+                        </div>
+                    }
                 </header>
 
                 <div class="article-detail__image-wrapper">

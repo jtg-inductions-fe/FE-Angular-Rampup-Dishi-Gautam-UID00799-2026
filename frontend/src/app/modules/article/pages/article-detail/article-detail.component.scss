@@ -7,6 +7,9 @@
     padding: ds.px-to-rem(24) ds.px-to-rem(20) ds.px-to-rem(64);
 
     &__back {
+        display: inline-flex;
+        align-items: center;
+        gap: ds.px-to-rem(4);
         margin-bottom: ds.px-to-rem(32);
         padding: 0;
         border: 0;
@@ -31,7 +34,7 @@
 
     &__author {
         color: ds.$color-text-primary;
-        font-weight: 600;
+        font-weight: map-get(ds.$font-weights, semibold);
     }
 
     &__separator {
@@ -42,11 +45,18 @@
         color: ds.$color-text-secondary;
     }
 
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: ds.px-to-rem(12);
+        margin-bottom: ds.px-to-rem(20);
+    }
+
     &__title {
         margin: 0 0 ds.px-to-rem(16);
         color: ds.$color-text-primary;
         font-size: ds.px-to-rem(40);
-        font-weight: 700;
+        font-weight: map-get(ds.$font-weights, bold);
         line-height: 1.15;
         letter-spacing: -0.025em;
         overflow-wrap: anywhere;
@@ -77,16 +87,14 @@
     }
 
     &__image-wrapper {
+        position: relative;
         width: 100%;
+        height: ds.px-to-rem(520);
         margin-bottom: ds.px-to-rem(40);
         overflow: hidden;
     }
 
     &__image {
-        display: block;
-        width: 100%;
-        height: auto;
-        max-height: ds.px-to-rem(520);
         object-fit: cover;
     }
 
@@ -98,7 +106,7 @@
         overflow-wrap: anywhere;
         word-break: break-word;
 
-        :global(p) {
+        :where(p) {
             margin: 0 0 ds.px-to-rem(24);
         }
     }
