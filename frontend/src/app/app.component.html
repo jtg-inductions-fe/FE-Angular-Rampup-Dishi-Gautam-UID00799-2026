@@ -1,3 +1,5 @@
-<app-navbar></app-navbar>
+@if (router.url !== routePaths.login && router.url !== routePaths.signup) {
+    <app-navbar></app-navbar>
+}
 <app-loader></app-loader>
 <router-outlet></router-outlet>
