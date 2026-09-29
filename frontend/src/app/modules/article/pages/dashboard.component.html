@@ -1,22 +1,24 @@
 <section class="dashboard">
-    <header class="dashboard-header">
-        <div class="dashboard-heading">
-            <h1 class="dashboard-title">Articles</h1>
+    <header class="dashboard__header">
+        <div class="dashboard__heading">
+            <h1 class="dashboard__title">Articles</h1>
 
-            <p class="dashboard-description">Explore the latest stories and ideas.</p>
+            <p class="dashboard__description">Explore the latest stories and ideas.</p>
         </div>
 
         <button mat-flat-button color="primary" type="button">Create article</button>
     </header>
 
-    <main class="article-list">
+    <main class="dashboard__list">
         @for (article of articles(); track article.id) {
             <app-article-card [article]="article" />
         } @empty {
-            <div class="empty-state">
-                <h2 class="empty-state-title">No articles found</h2>
+            <div class="dashboard__empty-state">
+                <h2 class="dashboard__empty-state-title">No articles found</h2>
 
-                <p class="empty-state-description">There are no articles available yet.</p>
+                <p class="dashboard__empty-state-description">
+                    There are no articles available yet.
+                </p>
             </div>
         }
     </main>

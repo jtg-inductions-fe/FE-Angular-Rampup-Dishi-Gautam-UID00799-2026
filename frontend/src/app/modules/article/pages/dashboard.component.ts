@@ -1,34 +1,44 @@
-import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { ArticleCardComponent } from '../components/articles-card/articles-card.component';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
-import { MatButtonModule } from '@angular/material/button';
+
+import { ArticleCardComponent } from '../components/article-card/article-card.component';
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [DatePipe, ArticleCardComponent, MatButtonModule],
+    imports: [ArticleCardComponent, MatButtonModule],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
     private readonly articleService = inject(ArticleService);
+    private readonly snackBar = inject(MatSnackBar);
+    private readonly destroyRef = inject(DestroyRef);
 
     readonly articles = signal<Article[]>([]);
 
-    ngOnInit(): void {
+    constructor() {
         this.loadArticles();
     }
 
     private loadArticles(): void {
-        this.articleService.getArticles().subscribe({
-            next: (response) => {
-                this.articles.set(response.data);
-            },
-            error: (error) => {
-                console.error('Failed to load articles:', error);
-            },
-        });
+        this.articleService
+            .getArticles()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (articles) => {
+                    this.articles.set(articles);
+                },
+                error: () => {
+                    this.snackBar.open('Failed to load articles. Please try again.', 'Close', {
+                        duration: 3000,
+                    });
+                },
+            });
     }
 }

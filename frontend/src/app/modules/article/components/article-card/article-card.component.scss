@@ -22,7 +22,7 @@
 
     &__author {
         color: ds.$color-text-primary;
-        font-weight: 500;
+        font-weight: map-get(ds.$font-weights, medium);
     }
 
     &__meta-separator {
@@ -38,18 +38,17 @@
         color: ds.$color-text-primary;
         font-size: ds.px-to-rem(24);
         line-height: 1.25;
-        font-weight: 700;
+        font-weight: map-get(ds.$font-weights, bold);
     }
 
     &__description {
-        display: -webkit-box;
         margin: 0;
         overflow: hidden;
         color: ds.$color-text-secondary;
         font-size: ds.px-to-rem(16);
         line-height: 1.5;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+
+        @include ds.line-clamp(2);
     }
 
     &__footer {

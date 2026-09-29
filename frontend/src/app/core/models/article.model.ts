@@ -17,10 +17,3 @@ export interface ArticleListData {
     currentPage: number;
     pageSize: number;
 }
-
-export interface ArticleListResponse {
-    success: boolean;
-    message: string;
-    data: ArticleListData;
-    timeStamp: string;
-}
