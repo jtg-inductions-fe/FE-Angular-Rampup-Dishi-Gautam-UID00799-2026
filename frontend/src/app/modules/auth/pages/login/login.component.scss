@@ -1,6 +1,6 @@
 @use 'abstracts' as ds;
 
-.login-page {
+.login {
     min-height: calc(100dvh - ds.px-to-rem(56));
     padding: ds.px-to-rem(24);
     display: grid;

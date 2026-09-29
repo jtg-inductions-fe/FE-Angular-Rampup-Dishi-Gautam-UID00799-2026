@@ -1,19 +1,17 @@
-import { Component } from '@angular/core';
-import {
-    AbstractControl,
-    FormControl,
-    FormGroup,
-    ReactiveFormsModule,
-    ValidationErrors,
-    Validators,
-} from '@angular/forms';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
-import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
+
 import { AuthService } from '@app/core/services/auth.service';
+import { AUTH_FORM_FIELDS } from '@app/shared/constants/auth-form-fields';
+import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
+
+import { passwordMatchValidator } from './password-validator';
 
 @Component({
     selector: 'app-signup',
@@ -30,58 +28,40 @@ import { AuthService } from '@app/core/services/auth.service';
     styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
-    protected readonly routePaths=ROUTE_PATHS;
-    readonly signupForm = new FormGroup(
+    readonly signupForm = this.formBuilder.group(
         {
-            username: new FormControl('', {
-                nonNullable: true,
-                validators: [Validators.required],
-            }),
-
-            email: new FormControl('', {
-                nonNullable: true,
+            [AUTH_FORM_FIELDS.USERNAME]: this.formBuilder.control('', {
                 validators: [
                     Validators.required,
-                    Validators.email,
+                    Validators.minLength(3),
+                    Validators.maxLength(50),
                 ],
             }),
-
-            password: new FormControl('', {
-                nonNullable: true,
+            [AUTH_FORM_FIELDS.EMAIL]: this.formBuilder.control('', {
+                validators: [Validators.required, Validators.email, Validators.maxLength(254)],
+            }),
+            [AUTH_FORM_FIELDS.PASSWORD]: this.formBuilder.control('', {
                 validators: [
                     Validators.required,
                     Validators.minLength(8),
-                    Validators.pattern(
-                        /^(?=(?:.*\d){2,})(?=(?:.*[^A-Za-z0-9]){2,}).+$/,
-                    ),
+                    Validators.maxLength(128),
+                    Validators.pattern(/^(?=(?:.*\d){2,})(?=(?:.*[^A-Za-z0-9]){2,}).+$/),
                 ],
             }),
-
-            confirmPassword: new FormControl('', {
-                nonNullable: true,
-                validators: [Validators.required],
+            [AUTH_FORM_FIELDS.CONFIRM_PASSWORD]: this.formBuilder.control('', {
+                validators: Validators.required,
             }),
         },
         {
-            validators: (control: AbstractControl): ValidationErrors | null => {
-                const password = control.get('password')?.value;
-                const confirmPassword =
-                    control.get('confirmPassword')?.value;
-
-                if (!password || !confirmPassword) {
-                    return null;
-                }
-
-                return password === confirmPassword
-                    ? null
-                    : { passwordMismatch: true };
-            },
+            validators: passwordMatchValidator,
         },
     );
 
+    protected readonly routePaths = ROUTE_PATHS;
     isSubmitting = false;
-
+    private readonly destroyRef = inject(DestroyRef);
     constructor(
+        private readonly formBuilder: NonNullableFormBuilder,
         private readonly authService: AuthService,
         private readonly router: Router,
     ) {}
@@ -92,24 +72,19 @@ export class SignupComponent {
             return;
         }
 
-        const {
-            username,
-            email,
-            password,
-        } = this.signupForm.getRawValue();
-
+        const { username, email, password } = this.signupForm.getRawValue();
         this.isSubmitting = true;
-
         this.authService
             .register({
                 username,
                 email,
                 password,
             })
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
                     this.isSubmitting = false;
-                    this.router.navigate(['/login']);
+                    this.router.navigate([this.routePaths.login]);
                 },
                 error: () => {
                     this.isSubmitting = false;

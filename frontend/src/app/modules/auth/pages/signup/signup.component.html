@@ -1,37 +1,31 @@
-<section class="signup-page">
-    <mat-card class="signup-page__card" appearance="outlined">
+<section class="signup">
+    <mat-card class="signup__card" appearance="outlined">
         <mat-card-content>
-            <div class="signup-page__header">
-                <h1 class="signup-page__title">Create your account</h1>
-                <p class="signup-page__subtitle">
-                    Join Folio and start sharing your stories
-                </p>
+            <div class="signup__header">
+                <h1 class="signup__title">Create your account</h1>
+                <p class="signup__subtitle">Join Folio and start sharing your stories</p>
             </div>
 
-            <form
-                class="signup-page__form"
-                [formGroup]="signupForm"
-                (ngSubmit)="onSubmit()"
-            >
-                <mat-form-field appearance="outline" class="signup-page__field">
+            <form class="signup__form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="outline" class="signup__field">
                     <mat-label>Username</mat-label>
-                    <input
-                        matInput
-                        type="text"
-                        placeholder="dishi"
-                        formControlName="username"
-                    />
 
-                    @if (
-                        signupForm.controls.username.hasError('required') &&
-                        signupForm.controls.username.touched
-                    ) {
-                        <mat-error>Username is required</mat-error>
+                    <input matInput type="text" placeholder="dishi" formControlName="username" />
+
+                    @if (signupForm.controls.username.touched) {
+                        @if (signupForm.controls.username.hasError('required')) {
+                            <mat-error>Username is required</mat-error>
+                        } @else if (signupForm.controls.username.hasError('minlength')) {
+                            <mat-error> Username must be at least 3 characters </mat-error>
+                        } @else if (signupForm.controls.username.hasError('maxlength')) {
+                            <mat-error> Username cannot exceed 50 characters </mat-error>
+                        }
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="signup-page__field">
+                <mat-form-field appearance="outline" class="signup__field">
                     <mat-label>Email</mat-label>
+
                     <input
                         matInput
                         type="email"
@@ -39,23 +33,20 @@
                         formControlName="email"
                     />
 
-                    @if (
-                        signupForm.controls.email.hasError('required') &&
-                        signupForm.controls.email.touched
-                    ) {
-                        <mat-error>Email is required</mat-error>
-                    }
-
-                    @if (
-                        signupForm.controls.email.hasError('email') &&
-                        signupForm.controls.email.touched
-                    ) {
-                        <mat-error>Enter a valid email address</mat-error>
+                    @if (signupForm.controls.email.touched) {
+                        @if (signupForm.controls.email.hasError('required')) {
+                            <mat-error>Email is required</mat-error>
+                        } @else if (signupForm.controls.email.hasError('email')) {
+                            <mat-error> Enter a valid email address </mat-error>
+                        } @else if (signupForm.controls.email.hasError('maxlength')) {
+                            <mat-error> Email cannot exceed 254 characters </mat-error>
+                        }
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="signup-page__field">
+                <mat-form-field appearance="outline" class="signup__field">
                     <mat-label>Password</mat-label>
+
                     <input
                         matInput
                         type="password"
@@ -63,34 +54,22 @@
                         formControlName="password"
                     />
 
-                    @if (
-                        signupForm.controls.password.hasError('required') &&
-                        signupForm.controls.password.touched
-                    ) {
-                        <mat-error>Password is required</mat-error>
-                    }
-
-                    @if (
-                        signupForm.controls.password.hasError('minlength') &&
-                        signupForm.controls.password.touched
-                    ) {
-                        <mat-error>
-                            Password must be at least 8 characters
-                        </mat-error>
-                    }
-
-                    @if (
-                        signupForm.controls.password.hasError('pattern') &&
-                        signupForm.controls.password.touched
-                    ) {
-                        <mat-error>
-                            Use at least 2 numbers and 2 special characters
-                        </mat-error>
+                    @if (signupForm.controls.password.touched) {
+                        @if (signupForm.controls.password.hasError('required')) {
+                            <mat-error>Password is required</mat-error>
+                        } @else if (signupForm.controls.password.hasError('minlength')) {
+                            <mat-error> Password must be at least 8 characters </mat-error>
+                        } @else if (signupForm.controls.password.hasError('maxlength')) {
+                            <mat-error> Password cannot exceed 128 characters </mat-error>
+                        } @else if (signupForm.controls.password.hasError('pattern')) {
+                            <mat-error> Use at least 2 numbers and 2 special characters </mat-error>
+                        }
                     }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="signup-page__field">
+                <mat-form-field appearance="outline" class="signup__field">
                     <mat-label>Confirm password</mat-label>
+
                     <input
                         matInput
                         type="password"
@@ -98,19 +77,12 @@
                         formControlName="confirmPassword"
                     />
 
-                    @if (
-                        signupForm.controls.confirmPassword.hasError(
-                            'required'
-                        ) && signupForm.controls.confirmPassword.touched
-                    ) {
-                        <mat-error>Please confirm your password</mat-error>
-                    }
-
-                    @if (
-                        signupForm.hasError('passwordMismatch') &&
-                        signupForm.controls.confirmPassword.touched
-                    ) {
-                        <mat-error>Passwords do not match</mat-error>
+                    @if (signupForm.controls.confirmPassword.touched) {
+                        @if (signupForm.controls.confirmPassword.hasError('required')) {
+                            <mat-error> Please confirm your password </mat-error>
+                        } @else if (signupForm.hasError('passwordMismatch')) {
+                            <mat-error> Passwords do not match </mat-error>
+                        }
                     }
                 </mat-form-field>
 
@@ -118,18 +90,16 @@
                     mat-flat-button
                     color="primary"
                     type="submit"
-                    class="signup-page__button"
+                    class="signup__button"
                     [disabled]="isSubmitting"
                 >
                     {{ isSubmitting ? 'Creating account...' : 'Sign up' }}
                 </button>
             </form>
 
-            <p class="signup-page__login">
+            <p class="signup__login">
                 Already have an account?
-                <a class="signup-page__link" [routerLink]="routePaths.login">
-                    Login
-                </a>
+                <a class="signup__link" [routerLink]="routePaths.login"> Login </a>
             </p>
         </mat-card-content>
     </mat-card>

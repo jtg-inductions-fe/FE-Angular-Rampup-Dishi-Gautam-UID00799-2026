@@ -1,131 +1,76 @@
 import { Injectable, signal } from '@angular/core';
-import {
-    HttpClient,
-    HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {
-    BehaviorSubject,
-    Observable,
-    tap,
-} from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
-import {
-    ApiResponse,
-    LoginData,
-    LoginRequest,
-    RegisterRequest,
-    User,
-} from '../models/user.model';
+import { User } from '@app/core/models/user.model';
+import { ApiResponse } from '../models/api-response.model';
+import { LoginData, LoginRequest, RegisterRequest } from '../models/auth.model';
+
+import { UserService } from '@app/core/services/user.service';
+import { APP_CONSTANTS } from '@app/shared/constants/app.constants';
+import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    private readonly apiUrl =
-        'http://localhost:3000/api/v1';
-
-    private readonly tokenKey = 'folio_token';
-
-    private readonly currentUserSubject =
-        new BehaviorSubject<User | null>(null);
-
-    readonly currentUser$ =
-        this.currentUserSubject.asObservable();
-
-    readonly currentUser =
-        signal<User | null>(null);
-
-    readonly isAuthenticated = signal<boolean>(
-        !!localStorage.getItem(this.tokenKey),
-    );
+    readonly isAuthenticated = signal(!!localStorage.getItem(APP_CONSTANTS.storageKeys.authToken));
 
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
+        private readonly userService: UserService,
     ) {
         this.restoreSession();
     }
 
-    register(
-        registerData: RegisterRequest,
-    ): Observable<ApiResponse<User>> {
+    register(registerData: RegisterRequest): Observable<ApiResponse<User>> {
         return this.http.post<ApiResponse<User>>(
-            `${this.apiUrl}/users/register`,
+            `${APP_CONSTANTS.apiUrl}/users/register`,
             registerData,
         );
     }
 
-    login(
-        loginData: LoginRequest,
-    ): Observable<ApiResponse<LoginData>> {
+    login(loginData: LoginRequest): Observable<ApiResponse<LoginData>> {
         return this.http
-            .post<ApiResponse<LoginData>>(
-                `${this.apiUrl}/users/login`,
-                loginData,
-            )
+            .post<ApiResponse<LoginData>>(`${APP_CONSTANTS.apiUrl}/users/login`, loginData)
             .pipe(
                 tap((response) => {
                     const { token, user } = response.data;
 
-                    localStorage.setItem(
-                        this.tokenKey,
-                        token,
-                    );
+                    localStorage.setItem(APP_CONSTANTS.storageKeys.authToken, token);
 
-                    this.setUser(user);
+                    this.userService.setUser(user);
+                    this.isAuthenticated.set(true);
                 }),
             );
     }
 
-    getProfile(): Observable<ApiResponse<User>> {
-        return this.http.get<ApiResponse<User>>(
-            `${this.apiUrl}/users/profile`,
-        );
-    }
-
     getToken(): string | null {
-        return localStorage.getItem(this.tokenKey);
-    }
-
-    getUser(): User | null {
-        return this.currentUserSubject.value;
+        return localStorage.getItem(APP_CONSTANTS.storageKeys.authToken);
     }
 
     logout(): void {
-        localStorage.removeItem(this.tokenKey);
-
-        this.currentUserSubject.next(null);
-        this.currentUser.set(null);
+        localStorage.removeItem(APP_CONSTANTS.storageKeys.authToken);
+        this.userService.clearUser();
         this.isAuthenticated.set(false);
-
-        this.router.navigate(['/login']);
+        this.router.navigate([ROUTE_PATHS.login]);
     }
 
     private restoreSession(): void {
         const token = this.getToken();
-
         if (!token) {
             return;
         }
-
-        this.getProfile().subscribe({
+        this.userService.getProfile().subscribe({
             next: (response) => {
-                this.setUser(response.data);
+                this.userService.setUser(response.data);
+                this.isAuthenticated.set(true);
             },
-            error: (error: HttpErrorResponse) => {
-                console.error(
-                    'Session restore failed:',
-                    error.status,
-                    error.error,
-                );
+            error: () => {
+                this.logout();
             },
         });
-    }
-
-    private setUser(user: User): void {
-        this.currentUserSubject.next(user);
-        this.currentUser.set(user);
-        this.isAuthenticated.set(true);
     }
 }
