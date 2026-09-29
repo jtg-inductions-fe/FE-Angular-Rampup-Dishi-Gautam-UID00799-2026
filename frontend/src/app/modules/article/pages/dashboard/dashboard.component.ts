@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
 
-import { ArticleCardComponent } from '../components/article-card/article-card.component';
+import { ArticleCardComponent } from '@modules/article/components/article-card/article-card.component';
 
 @Component({
     selector: 'app-dashboard',
