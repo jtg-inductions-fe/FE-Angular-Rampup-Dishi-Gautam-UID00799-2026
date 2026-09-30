@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
@@ -16,12 +16,14 @@ import { SnackbarService } from '@app/shared/services/snackbar.service';
 @Component({
     selector: 'app-article-detail',
     standalone: true,
-    imports: [DatePipe, MatButtonModule, RouterLink,MatIcon],
+    imports: [DatePipe, MatButtonModule, RouterLink, MatIconModule],
     templateUrl: './article-detail.component.html',
     styleUrl: './article-detail.component.scss',
 })
 export class ArticleDetailComponent implements OnInit {
     protected readonly article = signal<Article | null>(null);
+    protected readonly routePaths = ROUTE_PATHS;
+
     private readonly location = inject(Location);
     private readonly userService = inject(UserService);
     private readonly route = inject(ActivatedRoute);
@@ -37,7 +39,6 @@ export class ArticleDetailComponent implements OnInit {
 
             if (!id) {
                 this.router.navigate([ROUTE_PATHS.dashboard]);
-
                 return;
             }
 
@@ -49,7 +50,7 @@ export class ArticleDetailComponent implements OnInit {
         return this.userService.getUser()?.username === author;
     }
 
-    protected deleteArticle(id: number): void {
+    protected deleteArticle(id: string): void {
         const dialogRef = this.dialog.open(DialogComponent, {
             width: '400px',
             data: {
@@ -68,8 +69,24 @@ export class ArticleDetailComponent implements OnInit {
                     return;
                 }
 
+                this.articleService
+                    .deleteArticle(id)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({
+                        next: () => {
+                            this.snackbar.success('Article deleted successfully.');
+
+                            this.router.navigate([ROUTE_PATHS.dashboard]);
+                        },
+                        error: (error) => {
+                            this.snackbar.error(
+                                error.error?.message ?? 'Unable to delete article.',
+                            );
+                        },
+                    });
             });
     }
+
     protected goBack(): void {
         this.location.back();
     }

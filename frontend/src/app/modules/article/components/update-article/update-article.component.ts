@@ -1,14 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {
-    FormBuilder,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
-import {
-    ActivatedRoute,
-    Router,
-    RouterLink,
-} from '@angular/router';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -66,16 +59,23 @@ export class UpdateArticleComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly articleService = inject(ArticleService);
     private readonly snackbar = inject(SnackbarService);
+    private readonly destroyRef = inject(DestroyRef);
 
     ngOnInit(): void {
-        const id = this.route.snapshot.paramMap.get('id');
+        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+            const id = params.get('id');
 
-        if (!id) {
-            return;
-        }
+            if (!id) {
+                this.snackbar.error('Article ID is missing.');
 
-        this.articleId = id;
-        this.loadArticle();
+                this.router.navigate([this.routePaths.dashboard]);
+
+                return;
+            }
+
+            this.articleId = id;
+            this.loadArticle();
+        });
     }
 
     onImageSelected(event: Event): void {
@@ -91,6 +91,8 @@ export class UpdateArticleComponent implements OnInit {
         reader.onload = () => {
             if (typeof reader.result === 'string') {
                 this.articleForm.controls.image.setValue(reader.result);
+                this.articleForm.controls.image.markAsDirty();
+                this.articleForm.controls.image.markAsTouched();
             }
         };
 
@@ -116,10 +118,10 @@ export class UpdateArticleComponent implements OnInit {
             return;
         }
 
-        this.articleForm.controls.tags.setValue([
-            ...currentTags,
-            tag,
-        ]);
+        this.articleForm.controls.tags.setValue([...currentTags, tag]);
+
+        this.articleForm.controls.tags.markAsDirty();
+        this.articleForm.controls.tags.markAsTouched();
 
         this.tagInput = '';
     }
@@ -127,9 +129,7 @@ export class UpdateArticleComponent implements OnInit {
     removeTag(tagToRemove: string): void {
         const currentTags = this.articleForm.controls.tags.value ?? [];
 
-        this.articleForm.controls.tags.setValue(
-            currentTags.filter((tag) => tag !== tagToRemove),
-        );
+        this.articleForm.controls.tags.setValue(currentTags.filter((tag) => tag !== tagToRemove));
 
         this.articleForm.controls.tags.markAsDirty();
     }
@@ -140,42 +140,40 @@ export class UpdateArticleComponent implements OnInit {
             return;
         }
 
+        if (!this.articleId) {
+            this.snackbar.error('Unable to update article.');
+            return;
+        }
+
         this.isSubmitting = true;
 
         const formValue = this.articleForm.getRawValue();
 
-        const shortDescription = this.createShortDescription(
-            formValue.description ?? '',
-        );
+        const description = formValue.description ?? '';
+
+        const shortDescription = this.createShortDescription(description);
 
         this.articleService
             .updateArticle(this.articleId, {
                 title: formValue.title ?? '',
                 shortDescription,
-                description: formValue.description ?? '',
+                description,
                 image: formValue.image ?? '',
                 tags: formValue.tags ?? [],
             })
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
                     this.isSubmitting = false;
 
-                    this.snackbar.open(
-                        'Article updated successfully',
-                        'Close',
-                    );
+                    this.snackbar.success('Article updated successfully.');
 
-                    this.router.navigate([
-                        this.routePaths.dashboard,
-                    ]);
+                    this.router.navigate([this.routePaths.dashboard]);
                 },
-                error: () => {
+                error: (error) => {
                     this.isSubmitting = false;
 
-                    this.snackbar.open(
-                        'Unable to update article',
-                        'Close',
-                    );
+                    this.snackbar.error(error.error?.message ?? 'Unable to update article.');
                 },
             });
     }
@@ -183,38 +181,35 @@ export class UpdateArticleComponent implements OnInit {
     private loadArticle(): void {
         this.isLoading = true;
 
-        this.articleService.getArticle(this.articleId).subscribe({
-            next: (article) => {
-                this.articleForm.patchValue({
-                    title: article.title,
-                    description: article.description,
-                    image: article.image,
-                    tags: article.tags,
-                });
+        this.articleService
+            .getArticle(this.articleId)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (article) => {
+                    this.articleForm.patchValue({
+                        title: article.title,
+                        description: article.description,
+                        image: article.image,
+                        tags: article.tags,
+                    });
 
-                this.isLoading = false;
-            },
-            error: () => {
-                this.isLoading = false;
+                    this.articleForm.markAsPristine();
+                    this.isLoading = false;
+                },
+                error: (error) => {
+                    this.isLoading = false;
 
-                this.snackbar.open(
-                    'Unable to load article',
-                    'Close',
-                );
+                    this.snackbar.error(error.error?.message ?? 'Unable to load article.');
 
-                this.router.navigate([
-                    this.routePaths.dashboard,
-                ]);
-            },
-        });
+                    this.router.navigate([this.routePaths.dashboard]);
+                },
+            });
     }
 
     private createShortDescription(description: string): string {
         const parser = new DOMParser();
-        const document = parser.parseFromString(
-            description,
-            'text/html',
-        );
+
+        const document = parser.parseFromString(description, 'text/html');
 
         const plainText = (document.body.textContent ?? '')
             .replace(/\u00a0/g, ' ')
@@ -222,8 +217,6 @@ export class UpdateArticleComponent implements OnInit {
             .replace(/\s+/g, ' ')
             .trim();
 
-        return plainText.length > 160
-            ? `${plainText.slice(0, 157)}...`
-            : plainText;
+        return plainText.length > 160 ? `${plainText.slice(0, 157)}...` : plainText;
     }
 }
