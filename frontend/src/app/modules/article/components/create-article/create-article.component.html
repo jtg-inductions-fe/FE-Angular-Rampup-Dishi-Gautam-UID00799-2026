@@ -37,7 +37,11 @@
                 articleForm.controls.title.hasError('maxlength') &&
                 articleForm.controls.title.touched
             ) {
-                <mat-error> Title cannot exceed 200 characters </mat-error>
+                <mat-error>
+                    Title cannot exceed
+                    {{ formLimits.titleMaxLength }}
+                    characters
+                </mat-error>
             }
 
             @if (articleForm.controls.title.hasError('backend')) {
@@ -54,19 +58,25 @@
                 matInput
                 rows="3"
                 formControlName="shortDescription"
-                placeholder="Write a short description"
-                maxlength="200"
+                [placeholder]="formConfig.shortDescription.placeholder"
+                [maxlength]="formLimits.shortDescriptionMaxLength"
             ></textarea>
 
             <mat-hint align="end">
-                {{ articleForm.controls.shortDescription.value.length }}/200
+                {{ articleForm.controls.shortDescription.value.length }}/{{
+                    formLimits.shortDescriptionMaxLength
+                }}
             </mat-hint>
 
             @if (
                 articleForm.controls.shortDescription.hasError('maxlength') &&
                 articleForm.controls.shortDescription.touched
             ) {
-                <mat-error> Short description cannot exceed 200 characters </mat-error>
+                <mat-error>
+                    Short description cannot exceed
+                    {{ formLimits.shortDescriptionMaxLength }}
+                    characters
+                </mat-error>
             }
 
             @if (articleForm.controls.shortDescription.hasError('backend')) {
@@ -145,14 +155,14 @@
                 <input
                     matInput
                     type="text"
-                    placeholder="Enter a tag"
+                    [placeholder]="formConfig.tagInput.placeholder"
                     [value]="tagInput"
                     (input)="onTagInput($event)"
                     (keydown.enter)="$event.preventDefault(); addTag()"
                 />
             </mat-form-field>
 
-            @if (articleForm.controls.tags.value?.length) {
+            @if (articleForm.controls.tags.value.length) {
                 <mat-chip-set aria-label="Article tags">
                     @for (tag of articleForm.controls.tags.value; track tag) {
                         <mat-chip [removable]="true" (removed)="removeTag(tag)">

@@ -1,10 +1,5 @@
-import {
-    ComponentFixture,
-    TestBed,
-} from '@angular/core/testing';
-import {
-    provideRouter,
-} from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { CreateArticleComponent } from './create-article.component';
 
@@ -41,9 +36,7 @@ describe('CreateArticleComponent', () => {
 
         component.addTag();
 
-        expect(component['articleForm'].controls.tags.value).toEqual([
-            'angular',
-        ]);
+        expect(component['articleForm'].controls.tags.value).toEqual(['angular']);
     });
 
     it('should not add duplicate tags', () => {
@@ -53,21 +46,14 @@ describe('CreateArticleComponent', () => {
         component['tagInput'] = 'angular';
         component.addTag();
 
-        expect(component['articleForm'].controls.tags.value).toEqual([
-            'angular',
-        ]);
+        expect(component['articleForm'].controls.tags.value).toEqual(['angular']);
     });
 
     it('should remove a tag', () => {
-        component['articleForm'].controls.tags.setValue([
-            'angular',
-            'typescript',
-        ]);
+        component['articleForm'].controls.tags.setValue(['angular', 'typescript']);
 
         component.removeTag('angular');
 
-        expect(component['articleForm'].controls.tags.value).toEqual([
-            'typescript',
-        ]);
+        expect(component['articleForm'].controls.tags.value).toEqual(['typescript']);
     });
 });

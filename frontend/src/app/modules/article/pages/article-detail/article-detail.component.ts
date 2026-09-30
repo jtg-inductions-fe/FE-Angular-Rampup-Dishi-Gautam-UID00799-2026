@@ -2,6 +2,7 @@ import { DatePipe, Location } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,7 +44,7 @@ export class ArticleDetailComponent implements OnInit {
             const id = params.get('id');
 
             if (!id) {
-                this.router.navigate([ROUTE_PATHS.dashboard]);
+                this.router.navigate(['/', this.routePaths.dashboard]);
                 return;
             }
 
@@ -72,7 +73,7 @@ export class ArticleDetailComponent implements OnInit {
                         next: () => {
                             this.snackbar.success('Article deleted successfully.');
 
-                            this.router.navigate([ROUTE_PATHS.dashboard]);
+                            this.router.navigate(['/', this.routePaths.dashboard]);
                         },
                         error: (error) => {
                             this.snackbar.error(
@@ -104,7 +105,7 @@ export class ArticleDetailComponent implements OnInit {
                         this.snackbar.error('Failed to load article. Please try again.');
                     }
 
-                    this.router.navigate([ROUTE_PATHS.dashboard]);
+                    this.router.navigate(['/', this.routePaths.dashboard]);
                 },
             });
     }

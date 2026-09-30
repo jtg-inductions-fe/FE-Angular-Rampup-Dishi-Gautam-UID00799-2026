@@ -1,0 +1,89 @@
+@use 'abstracts' as ds;
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: ds.px-to-rem(8px);
+    padding: ds.px-to-rem(24px) 0;
+
+    &__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: ds.px-to-rem(44px);
+        height: ds.px-to-rem(44px);
+        padding: 0;
+        border: ds.px-to-rem(1px) solid ds.$color-border;
+        border-radius: ds.px-to-rem(10px);
+        background: ds.$color-background;
+        color: ds.$color-text-primary;
+        font-family: inherit;
+        font-size: ds.px-to-rem(15px);
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        transition:
+            background-color 150ms ease,
+            color 150ms ease,
+            border-color 150ms ease,
+            transform 150ms ease;
+
+        &:hover:not(:disabled) {
+            background: ds.$color-surface-hover;
+            border-color: ds.$color-text-primary;
+        }
+
+        &:focus-visible {
+            outline: ds.px-to-rem(2px) solid ds.$color-text-primary;
+            outline-offset: ds.px-to-rem(2px);
+        }
+
+        &:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+
+        &:disabled {
+            color: ds.$color-text-muted;
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        &--active {
+            border-color: ds.$color-text-primary;
+            background: ds.$color-text-primary;
+            color: ds.$color-text-inverse;
+
+            &:hover:not(:disabled) {
+                border-color: ds.$color-text-primary;
+                background: ds.$color-primary-hover;
+            }
+        }
+
+        &--arrow {
+            mat-icon {
+                width: ds.px-to-rem(20px);
+                height: ds.px-to-rem(20px);
+                font-size: ds.px-to-rem(20px);
+            }
+        }
+    }
+
+    @include ds.respond-to(mobile-min) {
+        gap: ds.px-to-rem(6px);
+
+        &__button {
+            width: ds.px-to-rem(40px);
+            height: ds.px-to-rem(40px);
+        }
+    }
+
+    @include ds.respond-to(sm) {
+        gap: ds.px-to-rem(8px);
+
+        &__button {
+            width: ds.px-to-rem(44px);
+            height: ds.px-to-rem(44px);
+        }
+    }
+}

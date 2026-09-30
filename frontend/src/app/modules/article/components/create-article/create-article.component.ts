@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import {
     AbstractControl,
     NonNullableFormBuilder,
@@ -9,6 +9,8 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -20,8 +22,8 @@ import { MatInputModule } from '@angular/material/input';
 
 import { Article, ArticleValidationError } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
-import { RichTextEditorComponent } from '@app/shared/components/rich-text-editor/rich-text-editor';
 import { DialogComponent } from '@app/shared/components/dialog/dialog.component';
+import { RichTextEditorComponent } from '@app/shared/components/rich-text-editor/rich-text-editor';
 import { DIALOG_MESSAGES } from '@app/shared/constants/dialog-message';
 import { DialogWidth } from '@app/shared/constants/dialog-width.enum';
 import {
@@ -32,6 +34,7 @@ import {
 } from '@app/shared/constants/article-form.constants';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 import { SnackbarService } from '@app/shared/services/snackbar.service';
+import { trimmedMinLength } from '@app/shared/validators/trimmed-min-length.validator';
 
 @Component({
     selector: 'app-create-article',
@@ -56,14 +59,14 @@ export class CreateArticleComponent implements OnInit {
     protected readonly editorModules = ARTICLE_EDITOR_MODULES;
     protected readonly formLimits = ARTICLE_FORM_LIMITS;
 
-    private readonly formBuilder = inject(NonNullableFormBuilder);
+    protected readonly formBuilder = inject(NonNullableFormBuilder);
 
     protected readonly articleForm = this.formBuilder.group({
         title: [
             '',
             [
                 Validators.required,
-                Validators.minLength(5),
+                trimmedMinLength(5),
                 Validators.maxLength(ARTICLE_FORM_LIMITS.titleMaxLength),
             ],
         ],
@@ -78,6 +81,7 @@ export class CreateArticleComponent implements OnInit {
     protected isEditMode = false;
 
     private articleId: string | null = null;
+
     private readonly articleService = inject(ArticleService);
     private readonly dialog = inject(MatDialog);
     private readonly router = inject(Router);
@@ -182,7 +186,7 @@ export class CreateArticleComponent implements OnInit {
         const formValue = this.articleForm.getRawValue();
 
         return {
-            title: formValue.title,
+            title: formValue.title.trim(),
             shortDescription: formValue.shortDescription.trim(),
             description: formValue.description,
             image: formValue.image,
