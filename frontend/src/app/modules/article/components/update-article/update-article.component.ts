@@ -1,15 +1,24 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { QuillModule } from 'ngx-quill';
 
 import { ArticleService } from '@app/core/services/article.service';
+import {
+    ARTICLE_EDITOR_MODULES,
+    ARTICLE_FORM_CONFIG,
+    ARTICLE_FORM_FIELDS,
+    ARTICLE_FORM_LIMITS,
+} from '@app/shared/constants/article-form.constants';
+import { RichTextEditorComponent } from '@app/shared/components/rich-text-editor/rich-text-editor';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 import { SnackbarService } from '@app/shared/services/snackbar.service';
 
@@ -22,63 +31,63 @@ import { SnackbarService } from '@app/shared/services/snackbar.service';
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
-        QuillModule,
+        NgOptimizedImage,
         ReactiveFormsModule,
+        RichTextEditorComponent,
         RouterLink,
     ],
     templateUrl: './update-article.component.html',
     styleUrl: './update-article.component.scss',
 })
 export class UpdateArticleComponent implements OnInit {
-    protected readonly routePaths = ROUTE_PATHS;
-
-    protected readonly editorModules = {
-        toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{ header: [1, 2, 3, false] }],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'blockquote', 'code-block'],
-        ],
-    };
-
-    protected readonly articleForm = inject(FormBuilder).group({
-        title: ['', [Validators.required, Validators.maxLength(200)]],
-        shortDescription: [''],
-        description: ['', Validators.required],
-        image: ['', Validators.required],
-        tags: [[] as string[], Validators.required],
-    });
-
-    protected isLoading = false;
-    protected isSubmitting = false;
-    protected tagInput = '';
-
-    private articleId = '';
-
+    private readonly formBuilder = inject(NonNullableFormBuilder);
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly articleService = inject(ArticleService);
     private readonly snackbar = inject(SnackbarService);
     private readonly destroyRef = inject(DestroyRef);
 
+    protected readonly routePaths = ROUTE_PATHS;
+    protected readonly formFields = ARTICLE_FORM_FIELDS;
+    protected readonly formConfig = ARTICLE_FORM_CONFIG;
+    protected readonly editorModules = ARTICLE_EDITOR_MODULES;
+    protected readonly formLimits = ARTICLE_FORM_LIMITS;
+
+    protected readonly isSubmitting = signal(false);
+
+    protected readonly articleForm = this.formBuilder.group({
+        title: [
+            '',
+            [Validators.required, Validators.maxLength(ARTICLE_FORM_LIMITS.titleMaxLength)],
+        ],
+        shortDescription: ['', Validators.maxLength(ARTICLE_FORM_LIMITS.shortDescriptionMaxLength)],
+        description: [
+            '',
+            [
+                Validators.required,
+                Validators.minLength(ARTICLE_FORM_LIMITS.descriptionMinLength),
+                Validators.maxLength(ARTICLE_FORM_LIMITS.descriptionMaxLength),
+            ],
+        ],
+        image: ['', Validators.required],
+        tags: [
+            [] as string[],
+            [
+                Validators.required,
+                Validators.minLength(ARTICLE_FORM_LIMITS.tagsMinLength),
+                Validators.maxLength(ARTICLE_FORM_LIMITS.tagsMaxLength),
+            ],
+        ],
+        tagInput: [''],
+    });
+
+    private articleId = '';
+
     ngOnInit(): void {
-        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-            const id = params.get('id');
-
-            if (!id) {
-                this.snackbar.error('Article ID is missing.');
-
-                this.router.navigate([this.routePaths.dashboard]);
-
-                return;
-            }
-
-            this.articleId = id;
-            this.loadArticle();
-        });
+        this.loadArticleId();
     }
 
-    onImageSelected(event: Event): void {
+    protected onImageSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         const file = input.files?.[0];
 
@@ -86,35 +95,20 @@ export class UpdateArticleComponent implements OnInit {
             return;
         }
 
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            if (typeof reader.result === 'string') {
-                this.articleForm.controls.image.setValue(reader.result);
-                this.articleForm.controls.image.markAsDirty();
-                this.articleForm.controls.image.markAsTouched();
-            }
-        };
-
-        reader.readAsDataURL(file);
+        this.readImage(file);
     }
 
-    onTagInput(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        this.tagInput = input.value;
-    }
-
-    addTag(): void {
-        const tag = this.tagInput.trim();
+    protected addTag(): void {
+        const tag = this.articleForm.controls.tagInput.value.trim();
 
         if (!tag) {
             return;
         }
 
-        const currentTags = this.articleForm.controls.tags.value ?? [];
+        const currentTags = this.articleForm.controls.tags.value;
 
         if (currentTags.includes(tag)) {
-            this.tagInput = '';
+            this.clearTagInput();
             return;
         }
 
@@ -123,64 +117,51 @@ export class UpdateArticleComponent implements OnInit {
         this.articleForm.controls.tags.markAsDirty();
         this.articleForm.controls.tags.markAsTouched();
 
-        this.tagInput = '';
+        this.clearTagInput();
     }
 
-    removeTag(tagToRemove: string): void {
-        const currentTags = this.articleForm.controls.tags.value ?? [];
+    protected removeTag(tagToRemove: string): void {
+        const currentTags = this.articleForm.controls.tags.value;
 
         this.articleForm.controls.tags.setValue(currentTags.filter((tag) => tag !== tagToRemove));
 
         this.articleForm.controls.tags.markAsDirty();
+        this.articleForm.controls.tags.markAsTouched();
     }
 
-    onSubmit(): void {
-        if (this.articleForm.invalid || this.isSubmitting) {
-            this.articleForm.markAllAsTouched();
+    protected onSubmit(): void {
+        if (!this.canSubmit()) {
             return;
         }
 
-        if (!this.articleId) {
-            this.snackbar.error('Unable to update article.');
-            return;
-        }
+        this.isSubmitting.set(true);
 
-        this.isSubmitting = true;
-
-        const formValue = this.articleForm.getRawValue();
-
-        const description = formValue.description ?? '';
-
-        const shortDescription = this.createShortDescription(description);
-
-        this.articleService
-            .updateArticle(this.articleId, {
-                title: formValue.title ?? '',
-                shortDescription,
-                description,
-                image: formValue.image ?? '',
-                tags: formValue.tags ?? [],
-            })
-            .pipe(takeUntilDestroyed(this.destroyRef))
+        this.updateArticle()
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => this.isSubmitting.set(false)),
+            )
             .subscribe({
-                next: () => {
-                    this.isSubmitting = false;
-
-                    this.snackbar.success('Article updated successfully.');
-
-                    this.router.navigate([this.routePaths.dashboard]);
-                },
-                error: (error) => {
-                    this.isSubmitting = false;
-
-                    this.snackbar.error(error.error?.message ?? 'Unable to update article.');
-                },
+                next: () => this.handleUpdateSuccess(),
+                error: (error) => this.handleUpdateError(error),
             });
     }
 
-    private loadArticle(): void {
-        this.isLoading = true;
+    private loadArticleId(): void {
+        this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+            const id = params.get('id');
 
+            if (!id) {
+                this.handleMissingArticleId();
+                return;
+            }
+
+            this.articleId = id;
+            this.loadArticle();
+        });
+    }
+
+    private loadArticle(): void {
         this.articleService
             .getArticle(this.articleId)
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -188,35 +169,96 @@ export class UpdateArticleComponent implements OnInit {
                 next: (article) => {
                     this.articleForm.patchValue({
                         title: article.title,
+                        shortDescription: article.shortDescription,
                         description: article.description,
                         image: article.image,
                         tags: article.tags,
                     });
 
                     this.articleForm.markAsPristine();
-                    this.isLoading = false;
                 },
-                error: (error) => {
-                    this.isLoading = false;
-
-                    this.snackbar.error(error.error?.message ?? 'Unable to load article.');
-
-                    this.router.navigate([this.routePaths.dashboard]);
-                },
+                error: (error) => this.handleLoadError(error),
             });
     }
 
-    private createShortDescription(description: string): string {
-        const parser = new DOMParser();
+    private updateArticle() {
+        const formValue = this.articleForm.getRawValue();
 
-        const document = parser.parseFromString(description, 'text/html');
+        return this.articleService.updateArticle(this.articleId, {
+            title: formValue.title,
+            shortDescription: formValue.shortDescription.trim(),
+            description: formValue.description,
+            image: formValue.image,
+            tags: formValue.tags,
+        });
+    }
 
-        const plainText = (document.body.textContent ?? '')
-            .replace(/\u00a0/g, ' ')
-            .replace(/&nbsp;/gi, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
+    private canSubmit(): boolean {
+        if (this.articleForm.invalid) {
+            this.articleForm.markAllAsTouched();
+            return false;
+        }
 
-        return plainText.length > 160 ? `${plainText.slice(0, 157)}...` : plainText;
+        if (!this.articleId) {
+            this.snackbar.error('Unable to update article.');
+            return false;
+        }
+
+        if (this.isSubmitting()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private handleUpdateSuccess(): void {
+        this.snackbar.success('Article updated successfully.');
+
+        this.router.navigate(['/', this.routePaths.dashboard]);
+    }
+
+    private handleUpdateError(error: {
+        error?: {
+            message?: string;
+        };
+    }): void {
+        this.snackbar.error(error.error?.message ?? 'Unable to update article.');
+    }
+
+    private handleMissingArticleId(): void {
+        this.snackbar.error('Article ID is missing.');
+
+        this.router.navigate(['/', this.routePaths.dashboard]);
+    }
+
+    private handleLoadError(error: {
+        error?: {
+            message?: string;
+        };
+    }): void {
+        this.snackbar.error(error.error?.message ?? 'Unable to load article.');
+
+        this.router.navigate(['/', this.routePaths.dashboard]);
+    }
+
+    private readImage(file: File): void {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            if (typeof reader.result !== 'string') {
+                return;
+            }
+
+            this.articleForm.controls.image.setValue(reader.result);
+
+            this.articleForm.controls.image.markAsDirty();
+            this.articleForm.controls.image.markAsTouched();
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    private clearTagInput(): void {
+        this.articleForm.controls.tagInput.setValue('');
     }
 }

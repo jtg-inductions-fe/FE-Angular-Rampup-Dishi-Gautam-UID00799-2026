@@ -25,3 +25,8 @@ export interface CreateArticleRequest {
     image: string;
     tags: string[];
 }
+
+export interface ArticleValidationError {
+    field: string;
+    message: string;
+}

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+
 import { DialogData } from '@app/core/models/dialog.model';
 import { DialogComponent } from '@app/shared/components/dialog/dialog.component';
 
@@ -11,6 +12,10 @@ export class ApiErrorHandlerService {
     private readonly dialog = inject(MatDialog);
 
     handle(error: HttpErrorResponse): void {
+        if (this.isFeatureHandled(error.status)) {
+            return;
+        }
+
         const dialogData = this.createDialogData(error);
 
         this.dialog.open(DialogComponent, {
@@ -20,17 +25,17 @@ export class ApiErrorHandlerService {
         });
     }
 
-    private createDialogData(
-        error: HttpErrorResponse,
-    ): DialogData {
+    private isFeatureHandled(status: number): boolean {
+        return [400, 404, 409].includes(status);
+    }
+
+    private createDialogData(error: HttpErrorResponse): DialogData {
         const messages = this.extractMessages(error.error);
 
         return {
             title: this.getTitle(error.status),
             message:
-                messages.length > 0
-                    ? messages.join('\n')
-                    : this.getDefaultMessage(error.status),
+                messages.length > 0 ? messages.join('\n') : this.getDefaultMessage(error.status),
             confirmText: 'Close',
         };
     }
@@ -56,9 +61,7 @@ export class ApiErrorHandlerService {
                 return 'Too many requests';
 
             default:
-                return status >= 500
-                    ? 'Server error'
-                    : 'Something went wrong';
+                return status >= 500 ? 'Server error' : 'Something went wrong';
         }
     }
 
@@ -81,9 +84,7 @@ export class ApiErrorHandlerService {
 
         const object = value as Record<string, unknown>;
 
-        const detailedMessages = this.extractDetailedMessages(
-            object,
-        );
+        const detailedMessages = this.extractDetailedMessages(object);
 
         if (detailedMessages.length > 0) {
             return detailedMessages;
@@ -94,19 +95,13 @@ export class ApiErrorHandlerService {
         return message ? [message] : [];
     }
 
-    private extractArrayMessages(
-        values: unknown[],
-    ): string[] {
-        const messages = values.flatMap((value) =>
-            this.extractMessages(value),
-        );
+    private extractArrayMessages(values: unknown[]): string[] {
+        const messages = values.flatMap((value) => this.extractMessages(value));
 
         return this.removeDuplicates(messages);
     }
 
-    private extractDetailedMessages(
-        object: Record<string, unknown>,
-    ): string[] {
+    private extractDetailedMessages(object: Record<string, unknown>): string[] {
         const errors = object['errors'] ?? object['error'];
 
         if (!Array.isArray(errors)) {
@@ -115,27 +110,17 @@ export class ApiErrorHandlerService {
 
         return this.removeDuplicates(
             errors
-                .map((error) =>
-                    this.formatValidationError(error),
-                )
-                .filter(
-                    (message): message is string =>
-                        message !== null,
-                ),
+                .map((error) => this.formatValidationError(error))
+                .filter((message): message is string => message !== null),
         );
     }
 
-    private formatValidationError(
-        value: unknown,
-    ): string | null {
+    private formatValidationError(value: unknown): string | null {
         if (typeof value === 'string') {
             return value;
         }
 
-        if (
-            typeof value !== 'object' ||
-            value === null
-        ) {
+        if (typeof value !== 'object' || value === null) {
             return null;
         }
 
@@ -160,9 +145,7 @@ export class ApiErrorHandlerService {
         return field
             .replace(/([A-Z])/g, ' $1')
             .replace(/[_-]/g, ' ')
-            .replace(/^./, (character) =>
-                character.toUpperCase(),
-            );
+            .replace(/^./, (character) => character.toUpperCase());
     }
 
     private getString(value: unknown): string | null {
@@ -175,9 +158,7 @@ export class ApiErrorHandlerService {
         return message.length > 0 ? message : null;
     }
 
-    private removeDuplicates(
-        messages: string[],
-    ): string[] {
+    private removeDuplicates(messages: string[]): string[] {
         return [...new Set(messages)];
     }
 

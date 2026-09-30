@@ -1,8 +1,16 @@
 <section class="create-article">
     <header class="create-article__header">
-        <h2 class="create-article__title">Create article</h2>
+        <h2 class="create-article__title">
+            {{ isEditMode ? 'Edit article' : 'Create article' }}
+        </h2>
 
-        <p class="create-article__description">Share your story with the Folio community.</p>
+        <p class="create-article__description">
+            {{
+                isEditMode
+                    ? 'Update your article and share it with the Folio community.'
+                    : 'Share your story with the Folio community.'
+            }}
+        </p>
     </header>
 
     <form class="create-article__form" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
@@ -15,7 +23,7 @@
                 articleForm.controls.title.hasError('required') &&
                 articleForm.controls.title.touched
             ) {
-                <mat-error>Title is required</mat-error>
+                <mat-error> Title is required </mat-error>
             }
 
             @if (
@@ -39,15 +47,41 @@
             }
         </mat-form-field>
 
-        <div class="create-article__editor">
-            <label class="create-article__editor-label"> Article content </label>
+        <mat-form-field appearance="outline" class="create-article__field">
+            <mat-label>Short description</mat-label>
 
-            <quill-editor
-                class="create-article__editor-control"
-                formControlName="description"
+            <textarea
+                matInput
+                rows="3"
+                formControlName="shortDescription"
+                placeholder="Write a short description"
+                maxlength="200"
+            ></textarea>
+
+            <mat-hint align="end">
+                {{ articleForm.controls.shortDescription.value.length }}/200
+            </mat-hint>
+
+            @if (
+                articleForm.controls.shortDescription.hasError('maxlength') &&
+                articleForm.controls.shortDescription.touched
+            ) {
+                <mat-error> Short description cannot exceed 200 characters </mat-error>
+            }
+
+            @if (articleForm.controls.shortDescription.hasError('backend')) {
+                <mat-error>
+                    {{ articleForm.controls.shortDescription.getError('backend') }}
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <div class="create-article__editor">
+            <app-rich-text-editor
+                [control]="articleForm.controls.description"
                 [modules]="editorModules"
-                theme="snow"
-            ></quill-editor>
+                label="Article content"
+            />
 
             @if (
                 articleForm.controls.description.hasError('required') &&
@@ -146,12 +180,20 @@
         </div>
 
         <div class="create-article__actions">
-            <button mat-stroked-button type="button" [routerLink]="routePaths.dashboard">
+            <button mat-stroked-button type="button" [routerLink]="['/', routePaths.dashboard]">
                 Cancel
             </button>
 
             <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
-                {{ isSubmitting ? 'Publishing...' : 'Publish article' }}
+                {{
+                    isSubmitting
+                        ? isEditMode
+                            ? 'Updating...'
+                            : 'Publishing...'
+                        : isEditMode
+                          ? 'Update article'
+                          : 'Publish article'
+                }}
             </button>
         </div>
     </form>

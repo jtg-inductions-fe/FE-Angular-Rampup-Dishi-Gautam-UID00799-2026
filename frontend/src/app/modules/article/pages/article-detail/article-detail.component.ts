@@ -10,6 +10,8 @@ import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
 import { UserService } from '@app/core/services/user.service';
 import { DialogComponent } from '@app/shared/components/dialog/dialog.component';
+import { DIALOG_MESSAGES } from '@app/shared/constants/dialog-message';
+import { DialogWidth } from '@app/shared/constants/dialog-width.enum';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 import { SnackbarService } from '@app/shared/services/snackbar.service';
 
@@ -22,6 +24,9 @@ import { SnackbarService } from '@app/shared/services/snackbar.service';
 })
 export class ArticleDetailComponent implements OnInit {
     protected readonly article = signal<Article | null>(null);
+
+    protected readonly isOwner = signal(false);
+
     protected readonly routePaths = ROUTE_PATHS;
 
     private readonly location = inject(Location);
@@ -46,19 +51,10 @@ export class ArticleDetailComponent implements OnInit {
         });
     }
 
-    protected isArticleOwner(author: string): boolean {
-        return this.userService.getUser()?.username === author;
-    }
-
     protected deleteArticle(id: string): void {
         const dialogRef = this.dialog.open(DialogComponent, {
-            width: '400px',
-            data: {
-                title: 'Delete article',
-                message: 'Are you sure you want to delete this article?',
-                confirmText: 'Delete',
-                cancelText: 'Cancel',
-            },
+            width: DialogWidth.Small,
+            data: DIALOG_MESSAGES.dialogs.deleteArticle,
         });
 
         dialogRef
@@ -98,6 +94,8 @@ export class ArticleDetailComponent implements OnInit {
             .subscribe({
                 next: (article) => {
                     this.article.set(article);
+
+                    this.isOwner.set(this.userService.getUser()?.username === article.author);
                 },
                 error: (error) => {
                     if (error.status === 404) {
