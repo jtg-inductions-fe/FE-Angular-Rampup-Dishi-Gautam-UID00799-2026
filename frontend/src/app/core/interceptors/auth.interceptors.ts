@@ -1,11 +1,13 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { APP_CONSTANTS } from '@app/shared/constants/app.constants';
+import { environment } from '@app/environments/enviornments';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    const token = localStorage.getItem(APP_CONSTANTS.storageKeys.authToken);
+    const token = localStorage.getItem(environment.storageKeys.authToken);
+
     if (!token) {
         return next(req);
     }
+
     return next(
         req.clone({
             setHeaders: {

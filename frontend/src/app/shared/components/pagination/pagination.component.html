@@ -1,8 +1,5 @@
 @if (totalPages() > 1) {
-    <nav
-        class="pagination"
-        aria-label="Article pagination"
-    >
+    <nav class="pagination" aria-label="Article pagination">
         <button
             class="pagination__button pagination__button--arrow"
             type="button"
@@ -16,16 +13,10 @@
         @for (page of pages(); track page) {
             <button
                 class="pagination__button"
-                [class.pagination__button--active]="
-                    page === currentPage()
-                "
+                [class.pagination__button--active]="page === currentPage()"
                 type="button"
                 [attr.aria-label]="'Page ' + page"
-                [attr.aria-current]="
-                    page === currentPage()
-                        ? 'page'
-                        : null
-                "
+                [attr.aria-current]="page === currentPage() ? 'page' : null"
                 (click)="goToPage(page)"
             >
                 {{ page }}

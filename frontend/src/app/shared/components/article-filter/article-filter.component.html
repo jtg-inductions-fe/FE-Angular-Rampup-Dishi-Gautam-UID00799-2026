@@ -1,0 +1,29 @@
+<mat-form-field appearance="outline">
+    <mat-label>Author name</mat-label>
+
+    <input matInput type="text" [formControl]="authorControl" />
+
+    @if (authorControl.hasError('maxlength')) {
+        <mat-error> Author name is too long. </mat-error>
+    }
+</mat-form-field>
+
+<mat-form-field appearance="outline">
+    <mat-label>Tags</mat-label>
+
+    <input matInput type="text" placeholder="angular, typescript" [formControl]="tagsControl" />
+
+    <mat-hint> Separate multiple tags with commas. </mat-hint>
+
+    @if (tagsControl.hasError('maxlength')) {
+        <mat-error> Tags input is too long. </mat-error>
+    }
+</mat-form-field>
+
+<div class="article-filter__actions">
+    <button mat-stroked-button type="button" (click)="clearFilters()">Clear</button>
+
+    <button mat-flat-button color="primary" type="button" (click)="applyFilters()">
+        Apply filters
+    </button>
+</div>

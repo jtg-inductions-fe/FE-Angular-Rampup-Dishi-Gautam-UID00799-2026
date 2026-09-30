@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
-import { ArticlesComponent } from './articles/articles.component';
-
-describe('ArticlesComponent', () => {
-    let component: ArticlesComponent;
-    let fixture: ComponentFixture<ArticlesComponent>;
+describe('DashboardComponent', () => {
+    let component: DashboardComponent;
+    let fixture: ComponentFixture<DashboardComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ArticlesComponent],
+            imports: [DashboardComponent],
+            providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(ArticlesComponent);
+        fixture = TestBed.createComponent(DashboardComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

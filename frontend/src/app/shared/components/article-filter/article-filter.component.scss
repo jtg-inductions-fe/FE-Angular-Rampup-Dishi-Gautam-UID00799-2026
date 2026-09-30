@@ -1,0 +1,24 @@
+@use 'abstracts' as ds;
+
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+:host mat-form-field {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.article-filter__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: ds.px-to-rem(8);
+    width: 100%;
+    margin-top: ds.px-to-rem(4);
+    box-sizing: border-box;
+}

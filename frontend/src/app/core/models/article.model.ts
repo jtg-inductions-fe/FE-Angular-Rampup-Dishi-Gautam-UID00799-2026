@@ -18,6 +18,12 @@ export interface ArticleListData {
     pageSize: number;
 }
 
+export interface ArticleFilters {
+    search?: string;
+    author?: string;
+    tags?: string[];
+}
+
 export interface CreateArticleRequest {
     title: string;
     shortDescription: string;

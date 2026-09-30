@@ -20,13 +20,9 @@
             .ql-toolbar {
                 width: 100%;
                 min-height: ds.px-to-rem(28);
-                padding: ds.px-to-rem(4)
-                    ds.px-to-rem(8);
+                padding: ds.px-to-rem(4) ds.px-to-rem(8);
                 box-sizing: border-box;
-                border-radius: ds.px-to-rem(2)
-                    ds.px-to-rem(2)
-                    0
-                    0;
+                border-radius: ds.px-to-rem(2) ds.px-to-rem(2) 0 0;
 
                 .ql-formats {
                     margin-right: ds.px-to-rem(6);
@@ -47,10 +43,7 @@
                 width: 100%;
                 min-height: ds.px-to-rem(40);
                 height: ds.px-to-rem(40);
-                border-radius: 0
-                    0
-                    ds.px-to-rem(2)
-                    ds.px-to-rem(2);
+                border-radius: 0 0 ds.px-to-rem(2) ds.px-to-rem(2);
                 font-size: ds.px-to-rem(11);
             }
 

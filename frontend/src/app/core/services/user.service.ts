@@ -2,9 +2,9 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import {  User } from '@app/core/models/user.model';
+import { User } from '@app/core/models/user.model';
 import { ApiResponse } from '../models/api-response.model';
-import { APP_CONSTANTS } from '@app/shared/constants/app.constants';
+import { environment } from '@app/environments/enviornments';
 
 @Injectable({
     providedIn: 'root',
@@ -14,7 +14,7 @@ export class UserService {
     constructor(private readonly http: HttpClient) {}
 
     getProfile(): Observable<ApiResponse<User>> {
-        return this.http.get<ApiResponse<User>>(`${APP_CONSTANTS.apiUrl}/users/profile`);
+        return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/users/profile`);
     }
 
     getUser(): User | null {

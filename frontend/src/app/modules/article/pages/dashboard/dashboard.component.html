@@ -1,87 +1,40 @@
-<section class="dashboard">
-    <header class="dashboard__header">
-        <div class="dashboard__heading">
-            <h1 class="dashboard__title">Articles</h1>
+<mat-drawer-container class="dashboard">
+    <mat-drawer #filterDrawer class="dashboard__filter-drawer" mode="over" position="end">
+        <div class="dashboard__filter-header">
+            <h2>Filters</h2>
 
-            <p class="dashboard__description">Explore the latest stories and ideas.</p>
+            <button
+                mat-icon-button
+                type="button"
+                aria-label="Close filters"
+                (click)="filterDrawer.close()"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
 
-        <button
-            mat-flat-button
-            color="primary"
-            type="button"
-            [routerLink]="['/',routePaths.createArticle]"
-        >
-            Create article
-        </button>
-    </header>
-
-    <main class="dashboard__article-list">
-        @for (article of articles(); track article.id) {
-            <app-article-card [article]="article" />
-        } @empty {
-            <div class="dashboard__empty-state">
-                <h2 class="dashboard__empty-title">No articles found</h2>
-
-                <p class="dashboard__empty-description">There are no articles available yet.</p>
-            </div>
-            <div class="dashboard__filter-form">
-                <mat-form-field appearance="outline" class="dashboard__filter-field">
-                    <mat-label>Author name</mat-label>
-                    <input
-                        matInput
-                        type="text"
-                        placeholder="Enter author name"
-                        [formControl]="authorControl"
-                    />
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="dashboard__filter-field">
-                    <mat-label>Tags</mat-label>
-                    <input
-                        matInput
-                        type="text"
-                        placeholder="angular, javascript"
-                        [formControl]="tagsControl"
-                    />
-                    <mat-hint> Separate multiple tags with commas. </mat-hint>
-                </mat-form-field>
-            </div>
-            <div class="dashboard__filter-actions">
-                <button
-                    mat-stroked-button
-                    type="button"
-                    (click)="clearFilters(); filterDrawer.close()"
-                >
-                    Clear
-                </button>
-                <button
-                    mat-flat-button
-                    color="primary"
-                    type="button"
-                    (click)="applyFilters(); filterDrawer.close()"
-                >
-                    Apply filters
-                </button>
-            </div>
+        <div class="dashboard__filter-content">
+            <app-article-filter
+                (apply)="applyAndCloseFilters($event); filterDrawer.close()"
+                (clear)="clearAndCloseFilters(); filterDrawer.close()"
+            />
         </div>
     </mat-drawer>
-    <section class="dashboard">
+
+    <main class="dashboard__content">
         <header class="dashboard__header">
             <div class="dashboard__heading">
-                <h1 class="dashboard__title">
-                    @if (search()) {
-                        Search results
-                    } @else {
-                        Articles
-                    }
-                </h1>
-                <p class="dashboard__description">
-                    @if (search()) {
-                        Showing results for "{{ search() }}"
-                    } @else {
-                        Explore the latest stories and ideas.
-                    }
-                </p>
+                @if (searchControl.value) {
+                    <h1 class="dashboard__title">Search results</h1>
+
+                    <p class="dashboard__description">
+                        Showing results for "{{ searchControl.value }}"
+                    </p>
+                } @else {
+                    <h1 class="dashboard__title">Articles</h1>
+
+                    <p class="dashboard__description">Explore the latest stories and ideas.</p>
+                }
             </div>
 
             <div class="dashboard__actions">
@@ -89,17 +42,19 @@
                     <mat-icon>filter_list</mat-icon>
                     Filters
                 </button>
+
                 <button
                     mat-flat-button
                     color="primary"
                     type="button"
-                    [routerLink]="routePaths.createArticle"
+                    [routerLink]="['/', routePaths.articles, routePaths.createArticle]"
                 >
                     Create article
                 </button>
             </div>
         </header>
-        <main class="dashboard__article-list">
+
+        <section class="dashboard__article-list">
             @for (article of articles(); track article.id) {
                 <app-article-card [article]="article" />
             } @empty {
@@ -107,19 +62,26 @@
                     <h2 class="dashboard__empty-title">No articles found</h2>
 
                     <p class="dashboard__empty-description">
-                        @if (search()) {
-                            No articles match "{{ search() }}".
+                        @if (searchControl.value) {
+                            Try a different search term or adjust your filters.
                         } @else {
                             There are no articles available yet.
                         }
                     </p>
                 </div>
             }
-        </main>
-        <app-pagination
-    [currentPage]="currentPage()"
-    [totalPages]="totalPages()"
-    (pageChange)="changePage($event)"
-/>
-    </section>
+        </section>
+
+        @if (totalItems() > 0) {
+            <div class="dashboard__pagination">
+                <mat-paginator
+                    [length]="totalItems()"
+                    [pageIndex]="currentPage() - 1"
+                    [pageSize]="pageSize()"
+                    [pageSizeOptions]="[5, 10, 20]"
+                    (page)="changePage($event)"
+                />
+            </div>
+        }
+    </main>
 </mat-drawer-container>

@@ -8,14 +8,14 @@ import { ApiResponse } from '../models/api-response.model';
 import { LoginData, LoginRequest, RegisterRequest } from '../models/auth.model';
 
 import { UserService } from '@app/core/services/user.service';
-import { APP_CONSTANTS } from '@app/shared/constants/app.constants';
+import { environment } from '@app/environments/enviornments';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    readonly isAuthenticated = signal(!!localStorage.getItem(APP_CONSTANTS.storageKeys.authToken));
+    readonly isAuthenticated = signal(!!localStorage.getItem(environment.storageKeys.authToken));
 
     constructor(
         private readonly http: HttpClient,
@@ -27,19 +27,19 @@ export class AuthService {
 
     register(registerData: RegisterRequest): Observable<ApiResponse<User>> {
         return this.http.post<ApiResponse<User>>(
-            `${APP_CONSTANTS.apiUrl}/users/register`,
+            `${environment.apiUrl}/users/register`,
             registerData,
         );
     }
 
     login(loginData: LoginRequest): Observable<ApiResponse<LoginData>> {
         return this.http
-            .post<ApiResponse<LoginData>>(`${APP_CONSTANTS.apiUrl}/users/login`, loginData)
+            .post<ApiResponse<LoginData>>(`${environment.apiUrl}/users/login`, loginData)
             .pipe(
                 tap((response) => {
                     const { token, user } = response.data;
 
-                    localStorage.setItem(APP_CONSTANTS.storageKeys.authToken, token);
+                    localStorage.setItem(environment.storageKeys.authToken, token);
 
                     this.userService.setUser(user);
                     this.isAuthenticated.set(true);
@@ -48,11 +48,11 @@ export class AuthService {
     }
 
     getToken(): string | null {
-        return localStorage.getItem(APP_CONSTANTS.storageKeys.authToken);
+        return localStorage.getItem(environment.storageKeys.authToken);
     }
 
     logout(): void {
-        localStorage.removeItem(APP_CONSTANTS.storageKeys.authToken);
+        localStorage.removeItem(environment.storageKeys.authToken);
         this.userService.clearUser();
         this.isAuthenticated.set(false);
         this.router.navigate([ROUTE_PATHS.login]);

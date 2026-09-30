@@ -1,15 +1,7 @@
-import {
-    AbstractControl,
-    ValidationErrors,
-    ValidatorFn,
-} from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export const trimmedMinLength = (
-    minLength: number,
-): ValidatorFn => {
-    return (
-        control: AbstractControl,
-    ): ValidationErrors | null => {
+export const trimmedMinLength = (minLength: number): ValidatorFn => {
+    return (control: AbstractControl): ValidationErrors | null => {
         const value = String(control.value ?? '').trim();
 
         if (value.length < minLength) {
