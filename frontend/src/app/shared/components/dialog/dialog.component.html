@@ -9,7 +9,13 @@
 </mat-dialog-content>
 
 <mat-dialog-actions class="dialog__actions" align="end">
-    <button mat-flat-button color="primary" type="button" (click)="close()">
+    @if (data.cancelText) {
+        <button mat-stroked-button type="button" (click)="cancel()">
+            {{ data.cancelText }}
+        </button>
+    }
+
+    <button mat-flat-button color="primary" type="button" (click)="confirm()">
         {{ data.confirmText ?? 'Close' }}
     </button>
 </mat-dialog-actions>

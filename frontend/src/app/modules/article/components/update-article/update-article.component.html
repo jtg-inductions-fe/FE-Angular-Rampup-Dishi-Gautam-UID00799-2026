@@ -1,0 +1,176 @@
+<section class="update-article">
+    <header class="update-article__header">
+        <h2 class="update-article__title">Update article</h2>
+
+        <p class="update-article__description">
+            Update your story and keep it fresh for the Folio community.
+        </p>
+    </header>
+
+    <form class="update-article__form" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="update-article__field">
+            <mat-label>Title</mat-label>
+
+            <input
+                matInput
+                [type]="formConfig.title.type"
+                [placeholder]="formConfig.title.placeholder"
+                [formControlName]="formFields.title"
+            />
+
+            @if (
+                articleForm.controls.title.touched &&
+                articleForm.controls.title.hasError('required')
+            ) {
+                <mat-error> Title is required </mat-error>
+            }
+
+            @if (
+                articleForm.controls.title.touched &&
+                articleForm.controls.title.hasError('maxlength')
+            ) {
+                <mat-error>
+                    Title cannot exceed
+                    {{ formLimits.titleMaxLength }}
+                    characters
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="update-article__field">
+            <mat-label> Short description </mat-label>
+
+            <textarea
+                matInput
+                rows="3"
+                [formControlName]="formFields.shortDescription"
+                [placeholder]="formConfig.shortDescription.placeholder"
+                [maxlength]="formLimits.shortDescriptionMaxLength"
+            ></textarea>
+
+            <mat-hint align="end">
+                {{ articleForm.controls.shortDescription.value.length }}/
+                {{ formLimits.shortDescriptionMaxLength }}
+            </mat-hint>
+
+            @if (
+                articleForm.controls.shortDescription.touched &&
+                articleForm.controls.shortDescription.hasError('maxlength')
+            ) {
+                <mat-error>
+                    Short description cannot exceed
+                    {{ formLimits.shortDescriptionMaxLength }}
+                    characters
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <app-rich-text-editor
+            [control]="articleForm.controls.description"
+            [modules]="editorModules"
+            label="Article content"
+        />
+
+        @if (
+            articleForm.controls.description.touched &&
+            articleForm.controls.description.hasError('required')
+        ) {
+            <span class="update-article__error" role="alert"> Article content is required </span>
+        }
+
+        @if (
+            articleForm.controls.description.touched &&
+            articleForm.controls.description.hasError('minlength')
+        ) {
+            <span class="update-article__error" role="alert"> Article content is too short </span>
+        }
+
+        @if (
+            articleForm.controls.description.touched &&
+            articleForm.controls.description.hasError('maxlength')
+        ) {
+            <span class="update-article__error" role="alert">
+                Article content cannot exceed
+                {{ formLimits.descriptionMaxLength }}
+                characters
+            </span>
+        }
+
+        <div class="update-article__image">
+            <label class="update-article__image-label" [for]="formConfig.image.id">
+                Feature image
+            </label>
+
+            <input
+                [id]="formConfig.image.id"
+                [type]="formConfig.image.type"
+                [accept]="formConfig.image.accept"
+                (change)="onImageSelected($event)"
+            />
+
+            @if (articleForm.controls.image.value) {
+                <div class="update-article__image-preview">
+                    <img
+                        fill
+                        disableOptimizedSrcset
+                        [ngSrc]="articleForm.controls.image.value"
+                        alt="Article preview"
+                    />
+                </div>
+            }
+
+            @if (
+                articleForm.controls.image.touched &&
+                articleForm.controls.image.hasError('required')
+            ) {
+                <span class="update-article__error" role="alert"> Feature image is required </span>
+            }
+        </div>
+
+        <div class="update-article__tags">
+            <mat-form-field appearance="outline" class="update-article__field">
+                <mat-label>Tags</mat-label>
+
+                <input
+                    matInput
+                    [type]="formConfig.tagInput.type"
+                    [placeholder]="formConfig.tagInput.placeholder"
+                    [formControlName]="formFields.tagInput"
+                    (keydown.enter)="$event.preventDefault(); addTag()"
+                />
+            </mat-form-field>
+
+            @if (articleForm.controls.tags.value.length) {
+                <mat-chip-set aria-label="Article tags">
+                    @for (tag of articleForm.controls.tags.value; track tag) {
+                        <mat-chip [removable]="true" (removed)="removeTag(tag)">
+                            {{ tag }}
+
+                            <button matChipRemove type="button" [attr.aria-label]="'Remove ' + tag">
+                                <mat-icon> cancel </mat-icon>
+                            </button>
+                        </mat-chip>
+                    }
+                </mat-chip-set>
+            }
+
+            @if (
+                articleForm.controls.tags.touched && articleForm.controls.tags.hasError('required')
+            ) {
+                <span class="update-article__error" role="alert">
+                    At least one tag is required
+                </span>
+            }
+        </div>
+
+        <div class="update-article__actions">
+            <button mat-stroked-button type="button" [routerLink]="['/', routePaths.dashboard]">
+                Cancel
+            </button>
+
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
+                {{ isSubmitting() ? 'Updating...' : 'Update article' }}
+            </button>
+        </div>
+    </form>
+</section>
