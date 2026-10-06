@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal,DestroyRef, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
@@ -10,11 +10,13 @@ import { LoginData, LoginRequest, RegisterRequest } from '../models/auth.model';
 import { UserService } from '@app/core/services/user.service';
 import { environment } from '@app/environments/enviornments';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
+    private readonly destroyRef=inject(DestroyRef)
     readonly isAuthenticated = signal(!!localStorage.getItem(environment.storageKeys.authToken));
 
     constructor(
@@ -63,14 +65,19 @@ export class AuthService {
         if (!token) {
             return;
         }
-        this.userService.getProfile().subscribe({
-            next: (response) => {
+        this.userService.getProfile()
+        .pipe(
+            takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe({
+            next:(response)=>{
                 this.userService.setUser(response.data);
-                this.isAuthenticated.set(true);
+                this.isAuthenticated.set(true)
             },
-            error: () => {
+            error:()=>{
                 this.logout();
-            },
-        });
+            }
+            
+        })
     }
 }

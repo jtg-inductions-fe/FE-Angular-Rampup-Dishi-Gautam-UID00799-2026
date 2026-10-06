@@ -133,14 +133,10 @@ export class DashboardComponent implements OnInit {
             .subscribe({
                 next: (response) => {
                     this.articles.set(response.data);
-
                     this.totalPages.set(response.totalPages);
-
                     this.totalItems.set(response.totalItems);
-
                     this.currentPage.set(response.currentPage);
-
-                    this.pageSize.set(response.pageSize);
+                    this.pageSize       .set(response.pageSize);
                 },
             });
     }
@@ -150,9 +146,7 @@ export class DashboardComponent implements OnInit {
         filters: ArticleFilters;
     } {
         const search = params.get('search')?.trim() ?? '';
-
         const author = params.get('author')?.trim() ?? '';
-
         const tags =
             params
                 .get('tags')
@@ -161,9 +155,7 @@ export class DashboardComponent implements OnInit {
                 .filter(Boolean) ?? [];
 
         const pageParam = Number(params.get('page')) || 1;
-
         const page = pageParam > 0 ? pageParam : 1;
-
         this.searchControl.setValue(search, {
             emitEvent: false,
         });

@@ -74,16 +74,6 @@ export class LoginComponent {
 
                 error: (error) => {
                     this.isSubmitting = false;
-
-                    if (error.status === 401) {
-                        this.snackbarService.error(
-                            error.error?.message ?? AUTH_MESSAGES.LOGIN_UNAUTHORIZED,
-                        );
-
-                        return;
-                    }
-
-                    this.snackbarService.error(error.error?.message ?? AUTH_MESSAGES.LOGIN_ERROR);
                 },
             });
     }

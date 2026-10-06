@@ -64,7 +64,6 @@ export class SignupComponent {
 
     protected readonly routePaths = ROUTE_PATHS;
     isSubmitting = false;
-
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -94,22 +93,12 @@ export class SignupComponent {
             .subscribe({
                 next: () => {
                     this.isSubmitting = false;
-
                     this.snackbarService.success(AUTH_MESSAGES.SIGNUP_SUCCESS);
-
                     this.router.navigate([this.routePaths.login]);
                 },
 
                 error: (error) => {
                     this.isSubmitting = false;
-
-                    if (error.status === 409) {
-                        this.snackbarService.error(
-                            error.error?.message ?? AUTH_MESSAGES.SIGNUP_CONFLICT,
-                        );
-                        return;
-                    }
-
                     this.snackbarService.error(error.error?.message ?? AUTH_MESSAGES.SIGNUP_ERROR);
                 },
             });

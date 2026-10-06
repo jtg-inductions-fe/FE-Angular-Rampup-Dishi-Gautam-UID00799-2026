@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { DialogData } from '@app/core/models/dialog.model';
 import { DialogComponent } from '@app/shared/components/dialog/dialog.component';
+import { DialogWidth } from '../constants/dialog-width.enum';
 
 @Injectable({
     providedIn: 'root',
@@ -19,7 +20,7 @@ export class ApiErrorHandlerService {
         const dialogData = this.createDialogData(error);
 
         this.dialog.open(DialogComponent, {
-            width: '420px',
+            width: DialogWidth.Medium,
             maxWidth: 'calc(100vw - 32px)',
             data: dialogData,
         });
