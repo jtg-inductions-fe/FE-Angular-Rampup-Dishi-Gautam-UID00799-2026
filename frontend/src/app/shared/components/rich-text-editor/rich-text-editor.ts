@@ -8,7 +8,7 @@ import { QuillModule } from 'ngx-quill';
     imports: [QuillModule, ReactiveFormsModule],
     template: `
         <div class="rich-text-editor">
-                <quill-editor
+            <quill-editor
                 class="rich-text-editor__control"
                 [formControl]="control()"
                 [modules]="modules()"

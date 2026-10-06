@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal,DestroyRef, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
@@ -8,14 +8,16 @@ import { ApiResponse } from '../models/api-response.model';
 import { LoginData, LoginRequest, RegisterRequest } from '../models/auth.model';
 
 import { UserService } from '@app/core/services/user.service';
-import { APP_CONSTANTS } from '@app/shared/constants/app.constants';
+import { environment } from '@app/environments/enviornments';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    readonly isAuthenticated = signal(!!localStorage.getItem(APP_CONSTANTS.storageKeys.authToken));
+    private readonly destroyRef=inject(DestroyRef)
+    readonly isAuthenticated = signal(!!localStorage.getItem(environment.storageKeys.authToken));
 
     constructor(
         private readonly http: HttpClient,
@@ -27,19 +29,19 @@ export class AuthService {
 
     register(registerData: RegisterRequest): Observable<ApiResponse<User>> {
         return this.http.post<ApiResponse<User>>(
-            `${APP_CONSTANTS.apiUrl}/users/register`,
+            `${environment.apiUrl}/users/register`,
             registerData,
         );
     }
 
     login(loginData: LoginRequest): Observable<ApiResponse<LoginData>> {
         return this.http
-            .post<ApiResponse<LoginData>>(`${APP_CONSTANTS.apiUrl}/users/login`, loginData)
+            .post<ApiResponse<LoginData>>(`${environment.apiUrl}/users/login`, loginData)
             .pipe(
                 tap((response) => {
                     const { token, user } = response.data;
 
-                    localStorage.setItem(APP_CONSTANTS.storageKeys.authToken, token);
+                    localStorage.setItem(environment.storageKeys.authToken, token);
 
                     this.userService.setUser(user);
                     this.isAuthenticated.set(true);
@@ -48,11 +50,11 @@ export class AuthService {
     }
 
     getToken(): string | null {
-        return localStorage.getItem(APP_CONSTANTS.storageKeys.authToken);
+        return localStorage.getItem(environment.storageKeys.authToken);
     }
 
     logout(): void {
-        localStorage.removeItem(APP_CONSTANTS.storageKeys.authToken);
+        localStorage.removeItem(environment.storageKeys.authToken);
         this.userService.clearUser();
         this.isAuthenticated.set(false);
         this.router.navigate([ROUTE_PATHS.login]);
@@ -63,14 +65,19 @@ export class AuthService {
         if (!token) {
             return;
         }
-        this.userService.getProfile().subscribe({
-            next: (response) => {
+        this.userService.getProfile()
+        .pipe(
+            takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe({
+            next:(response)=>{
                 this.userService.setUser(response.data);
-                this.isAuthenticated.set(true);
+                this.isAuthenticated.set(true)
             },
-            error: () => {
+            error:()=>{
                 this.logout();
-            },
-        });
+            }
+            
+        })
     }
 }

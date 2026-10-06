@@ -13,11 +13,7 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
 
         provideHttpClient(
-            withInterceptors([
-                authInterceptor,
-                loadingInterceptor,
-                errorInterceptor,
-            ]),
+            withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor]),
         ),
 
         provideAnimationsAsync(),

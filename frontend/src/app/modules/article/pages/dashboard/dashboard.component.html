@@ -1,30 +1,87 @@
-<section class="dashboard">
-    <header class="dashboard__header">
-        <div class="dashboard__heading">
-            <h1 class="dashboard__title">Articles</h1>
+<mat-drawer-container class="dashboard">
+    <mat-drawer #filterDrawer class="dashboard__filter-drawer" mode="over" position="end">
+        <div class="dashboard__filter-header">
+            <h2>Filters</h2>
 
-            <p class="dashboard__description">Explore the latest stories and ideas.</p>
+            <button
+                mat-icon-button
+                type="button"
+                aria-label="Close filters"
+                (click)="filterDrawer.close()"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
 
-        <button
-            mat-flat-button
-            color="primary"
-            type="button"
-            [routerLink]="['/',routePaths.createArticle]"
-        >
-            Create article
-        </button>
-    </header>
+        <div class="dashboard__filter-content">
+            <app-article-filter
+                (apply)="applyAndCloseFilters($event); filterDrawer.close()"
+                (clear)="clearAndCloseFilters(); filterDrawer.close()"
+            />
+        </div>
+    </mat-drawer>
 
-    <main class="dashboard__article-list">
-        @for (article of articles(); track article.id) {
-            <app-article-card [article]="article" />
-        } @empty {
-            <div class="dashboard__empty-state">
-                <h2 class="dashboard__empty-title">No articles found</h2>
+    <main class="dashboard__content">
+        <header class="dashboard__header">
+            <div class="dashboard__heading">
+                @if (searchControl.value) {
+                    <h1 class="dashboard__title">Search results</h1>
 
-                <p class="dashboard__empty-description">There are no articles available yet.</p>
+                    <p class="dashboard__description">
+                        Showing results for "{{ searchControl.value }}"
+                    </p>
+                } @else {
+                    <h1 class="dashboard__title">Articles</h1>
+
+                    <p class="dashboard__description">Explore the latest stories and ideas.</p>
+                }
+            </div>
+
+            <div class="dashboard__actions">
+                <button mat-stroked-button type="button" (click)="filterDrawer.open()">
+                    <mat-icon>filter_list</mat-icon>
+                    Filters
+                </button>
+
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="button"
+                    [routerLink]="['/', routePaths.articles, routePaths.createArticle]"
+                >
+                    Create article
+                </button>
+            </div>
+        </header>
+
+        <section class="dashboard__article-list">
+            @for (article of articles(); track article.id) {
+                <app-article-card [article]="article" />
+            } @empty {
+                <div class="dashboard__empty-state">
+                    <h2 class="dashboard__empty-title">No articles found</h2>
+
+                    <p class="dashboard__empty-description">
+                        @if (searchControl.value) {
+                            Try a different search term or adjust your filters.
+                        } @else {
+                            There are no articles available yet.
+                        }
+                    </p>
+                </div>
+            }
+        </section>
+
+        @if (totalItems() > 0) {
+            <div class="dashboard__pagination">
+                <mat-paginator
+                    [length]="totalItems()"
+                    [pageIndex]="currentPage() - 1"
+                    [pageSize]="pageSize()"
+                    [pageSizeOptions]="[5, 10, 20]"
+                    (page)="changePage($event)"
+                />
             </div>
         }
     </main>
-</section>
+</mat-drawer-container>

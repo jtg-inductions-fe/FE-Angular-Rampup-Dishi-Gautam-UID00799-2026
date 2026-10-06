@@ -1,4 +1,4 @@
-export const APP_CONSTANTS = {
+export const environment = {
     apiUrl: 'http://localhost:3000/api/v1',
     storageKeys: {
         authToken: 'folio_token',
