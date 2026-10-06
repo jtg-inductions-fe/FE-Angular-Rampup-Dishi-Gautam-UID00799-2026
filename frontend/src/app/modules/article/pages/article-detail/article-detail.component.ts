@@ -4,24 +4,30 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 import { Article } from '@app/core/models/article.model';
 import { ArticleService } from '@app/core/services/article.service';
 import { UserService } from '@app/core/services/user.service';
 import { DialogComponent } from '@app/shared/components/dialog/dialog.component';
+import { DIALOG_MESSAGES } from '@app/shared/constants/dialog-message';
+import { DialogWidth } from '@app/shared/constants/dialog-width.enum';
 import { ROUTE_PATHS } from '@app/shared/constants/route-paths';
 import { SnackbarService } from '@app/shared/services/snackbar.service';
 
 @Component({
     selector: 'app-article-detail',
     standalone: true,
-    imports: [DatePipe, MatButtonModule, RouterLink,MatIcon],
+    imports: [DatePipe, MatButtonModule, RouterLink, MatIconModule],
     templateUrl: './article-detail.component.html',
     styleUrl: './article-detail.component.scss',
 })
 export class ArticleDetailComponent implements OnInit {
     protected readonly article = signal<Article | null>(null);
+
+    protected readonly isOwner = signal(false);
+
+    protected readonly routePaths = ROUTE_PATHS;
 
     private readonly location = inject(Location);
     private readonly userService = inject(UserService);
@@ -38,7 +44,6 @@ export class ArticleDetailComponent implements OnInit {
 
             if (!id) {
                 this.router.navigate([ROUTE_PATHS.dashboard]);
-
                 return;
             }
 
@@ -46,19 +51,10 @@ export class ArticleDetailComponent implements OnInit {
         });
     }
 
-    protected isArticleOwner(author: string): boolean {
-        return this.userService.getUser()?.username === author;
-    }
-
-    protected deleteArticle(id: number): void {
+    protected deleteArticle(id: string): void {
         const dialogRef = this.dialog.open(DialogComponent, {
-            width: '400px',
-            data: {
-                title: 'Delete article',
-                message: 'Are you sure you want to delete this article?',
-                confirmText: 'Delete',
-                cancelText: 'Cancel',
-            },
+            width: DialogWidth.Small,
+            data: DIALOG_MESSAGES.dialogs.deleteArticle,
         });
 
         dialogRef
@@ -69,6 +65,21 @@ export class ArticleDetailComponent implements OnInit {
                     return;
                 }
 
+                this.articleService
+                    .deleteArticle(id)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({
+                        next: () => {
+                            this.snackbar.success('Article deleted successfully.');
+
+                            this.router.navigate([ROUTE_PATHS.dashboard]);
+                        },
+                        error: (error) => {
+                            this.snackbar.error(
+                                error.error?.message ?? 'Unable to delete article.',
+                            );
+                        },
+                    });
             });
     }
 
@@ -83,6 +94,8 @@ export class ArticleDetailComponent implements OnInit {
             .subscribe({
                 next: (article) => {
                     this.article.set(article);
+
+                    this.isOwner.set(this.userService.getUser()?.username === article.author);
                 },
                 error: (error) => {
                     if (error.status === 404) {

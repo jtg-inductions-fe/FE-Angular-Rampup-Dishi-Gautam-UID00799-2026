@@ -1,0 +1,200 @@
+<section class="create-article">
+    <header class="create-article__header">
+        <h2 class="create-article__title">
+            {{ isEditMode ? 'Edit article' : 'Create article' }}
+        </h2>
+
+        <p class="create-article__description">
+            {{
+                isEditMode
+                    ? 'Update your article and share it with the Folio community.'
+                    : 'Share your story with the Folio community.'
+            }}
+        </p>
+    </header>
+
+    <form class="create-article__form" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="create-article__field">
+            <mat-label>Title</mat-label>
+
+            <input matInput type="text" placeholder="Enter article title" formControlName="title" />
+
+            @if (
+                articleForm.controls.title.hasError('required') &&
+                articleForm.controls.title.touched
+            ) {
+                <mat-error> Title is required </mat-error>
+            }
+
+            @if (
+                articleForm.controls.title.hasError('minlength') &&
+                articleForm.controls.title.touched
+            ) {
+                <mat-error> Title must be at least 5 characters </mat-error>
+            }
+
+            @if (
+                articleForm.controls.title.hasError('maxlength') &&
+                articleForm.controls.title.touched
+            ) {
+                <mat-error> Title cannot exceed 200 characters </mat-error>
+            }
+
+            @if (articleForm.controls.title.hasError('backend')) {
+                <mat-error>
+                    {{ articleForm.controls.title.getError('backend') }}
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="create-article__field">
+            <mat-label>Short description</mat-label>
+
+            <textarea
+                matInput
+                rows="3"
+                formControlName="shortDescription"
+                placeholder="Write a short description"
+                maxlength="200"
+            ></textarea>
+
+            <mat-hint align="end">
+                {{ articleForm.controls.shortDescription.value.length }}/200
+            </mat-hint>
+
+            @if (
+                articleForm.controls.shortDescription.hasError('maxlength') &&
+                articleForm.controls.shortDescription.touched
+            ) {
+                <mat-error> Short description cannot exceed 200 characters </mat-error>
+            }
+
+            @if (articleForm.controls.shortDescription.hasError('backend')) {
+                <mat-error>
+                    {{ articleForm.controls.shortDescription.getError('backend') }}
+                </mat-error>
+            }
+        </mat-form-field>
+
+        <div class="create-article__editor">
+            <app-rich-text-editor
+                [control]="articleForm.controls.description"
+                [modules]="editorModules"
+                label="Article content"
+            />
+
+            @if (
+                articleForm.controls.description.hasError('required') &&
+                articleForm.controls.description.touched
+            ) {
+                <span class="create-article__error"> Article content is required </span>
+            }
+
+            @if (
+                articleForm.controls.description.hasError('minlength') &&
+                articleForm.controls.description.touched
+            ) {
+                <span class="create-article__error">
+                    Article content must be at least 50 characters
+                </span>
+            }
+
+            @if (articleForm.controls.description.hasError('backend')) {
+                <span class="create-article__error">
+                    {{ articleForm.controls.description.getError('backend') }}
+                </span>
+            }
+        </div>
+
+        <div class="create-article__image">
+            <label class="create-article__image-label" for="article-image"> Feature image </label>
+
+            <input
+                id="article-image"
+                type="file"
+                accept="image/*"
+                (change)="onImageSelected($event)"
+            />
+
+            @if (articleForm.controls.image.value) {
+                <img
+                    class="create-article__image-preview"
+                    [src]="articleForm.controls.image.value"
+                    alt="Article preview"
+                />
+            }
+
+            @if (
+                articleForm.controls.image.hasError('required') &&
+                articleForm.controls.image.touched
+            ) {
+                <span class="create-article__error"> Feature image is required </span>
+            }
+
+            @if (articleForm.controls.image.hasError('backend')) {
+                <span class="create-article__error">
+                    {{ articleForm.controls.image.getError('backend') }}
+                </span>
+            }
+        </div>
+
+        <div class="create-article__tags">
+            <mat-form-field appearance="outline" class="create-article__field">
+                <mat-label>Tags</mat-label>
+
+                <input
+                    matInput
+                    type="text"
+                    placeholder="Enter a tag"
+                    [value]="tagInput"
+                    (input)="onTagInput($event)"
+                    (keydown.enter)="$event.preventDefault(); addTag()"
+                />
+            </mat-form-field>
+
+            @if (articleForm.controls.tags.value?.length) {
+                <mat-chip-set aria-label="Article tags">
+                    @for (tag of articleForm.controls.tags.value; track tag) {
+                        <mat-chip [removable]="true" (removed)="removeTag(tag)">
+                            {{ tag }}
+
+                            <button matChipRemove type="button" [attr.aria-label]="'Remove ' + tag">
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </mat-chip>
+                    }
+                </mat-chip-set>
+            }
+
+            @if (
+                articleForm.controls.tags.hasError('required') && articleForm.controls.tags.touched
+            ) {
+                <span class="create-article__error"> At least one tag is required </span>
+            }
+
+            @if (articleForm.controls.tags.hasError('backend')) {
+                <span class="create-article__error">
+                    {{ articleForm.controls.tags.getError('backend') }}
+                </span>
+            }
+        </div>
+
+        <div class="create-article__actions">
+            <button mat-stroked-button type="button" [routerLink]="['/', routePaths.dashboard]">
+                Cancel
+            </button>
+
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+                {{
+                    isSubmitting
+                        ? isEditMode
+                            ? 'Updating...'
+                            : 'Publishing...'
+                        : isEditMode
+                          ? 'Update article'
+                          : 'Publish article'
+                }}
+            </button>
+        </div>
+    </form>
+</section>

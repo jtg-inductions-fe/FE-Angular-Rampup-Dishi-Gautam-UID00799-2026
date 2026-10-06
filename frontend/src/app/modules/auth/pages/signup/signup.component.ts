@@ -63,7 +63,6 @@ export class SignupComponent {
     );
 
     protected readonly routePaths = ROUTE_PATHS;
-
     isSubmitting = false;
 
     private readonly destroyRef = inject(DestroyRef);
@@ -108,7 +107,6 @@ export class SignupComponent {
                         this.snackbarService.error(
                             error.error?.message ?? AUTH_MESSAGES.SIGNUP_CONFLICT,
                         );
-
                         return;
                     }
 

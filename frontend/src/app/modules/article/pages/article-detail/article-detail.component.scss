@@ -2,9 +2,13 @@
 
 .article-detail {
     width: 100%;
-    max-width: ds.px-to-rem(740);
-    margin: 0 auto;
     padding: ds.px-to-rem(24) ds.px-to-rem(20) ds.px-to-rem(64);
+
+    &__container {
+        width: 100%;
+        max-width: ds.px-to-rem(740);
+        margin: 0 auto;
+    }
 
     &__back {
         display: inline-flex;
@@ -124,7 +128,6 @@
 
         &__body {
             font-size: ds.px-to-rem(20);
-            line-height: 1.8;
         }
     }
 }
