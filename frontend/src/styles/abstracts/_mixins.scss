@@ -1,0 +1,32 @@
+@use 'sass:map';
+@use './variables' as variables;
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin respond-to($breakpoint) {
+    @if map.has-key(variables.$breakpoints, $breakpoint) {
+        @media (min-width: map.get(variables.$breakpoints, $breakpoint)) {
+            @content;
+        }
+    }
+}
+
+@mixin font-face($config, $font-weight) {
+    @font-face {
+        font-family: map.get($config, family);
+        src: url(map.get($config, src)) format('woff2');
+        font-weight: $font-weight;
+        font-style: normal;
+        font-display: swap;
+    }
+}
+
+@mixin text-style($font-family, $font-size, $font-weight) {
+    font-family: $font-family;
+    font-size: $font-size;
+    font-weight: map.get(variables.$font-weights, $font-weight);
+}
